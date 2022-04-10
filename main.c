@@ -5,9 +5,19 @@
 #include <sys/mman.h>
 #include <elf.h>
 #include <sys/types.h>
+#include <string.h>
 
-#define ELF_32	EM_386
-#define ELF_64	EM_X86_64
+#define __ELF_32	EM_386
+#define __ELF_64	EM_X86_64
+
+typedef struct	s_elf64_tab
+{
+	Elf64_Ehdr	*ehdr;
+	Elf64_Ehdr	*shdr;
+	Elf64_Shdr	*symt;
+	Elf64_Shdr	*strt;
+	Elf64_Shdr	*shst;
+}				t_elf64_tab;
 
 int		pr_error(char *msg) // Contains printf
 {
@@ -27,46 +37,64 @@ int		ft_nm(void *ptr, struct stat *st)
 	return (header->e_type);
 }
 
-Elf64_Shdr	*get_shdr(void *ptr, int type)
+Elf64_Shdr	*get_shdr(void *ptr, char *name)
 {
-	int			i;
+	int			idx;
 	Elf64_Ehdr	*ehdr;
 	Elf64_Shdr	*shdr;
+	Elf64_Shdr	*shstrtab;
 
-	if (ptr == NULL)
-		return (NULL);
-	ehdr = (Elf64_Ehdr *)ptr;
-	shdr = (Elf64_Shdr *)(ptr + ehdr->e_shoff);
-
-	i = -1;
-	while (++i < ehdr->e_shnum)
+	if (ptr && name)
 	{
-		if (shdr[i].sh_type == type)
-			return (&shdr[i]);
+		idx = -1;
+		ehdr = (Elf64_Ehdr *)ptr;
+		shdr = (Elf64_Shdr *)(ptr + ehdr->e_shoff);
+		shstrtab = &shdr[ehdr->e_shstrndx];
+		while (++idx < ehdr->e_shnum)
+		{
+			if (!strcmp(ptr + shstrtab->sh_offset + shdr[idx].sh_name, name))
+				return (&shdr[idx]);
+		}
 	}
 	return (NULL);
 }
 
+t_elf64_tab	*init_elf64_tab(void *ptr)
+{
+	t_elf64_tab	*tab;
+
+	if (ptr)
+	{
+		tab = (t_elf64_tab *)malloc(sizeof(t_elf64_tab));
+		if (elf64_tab)
+		{
+			tab->ehdr = (Elf64_Ehdr *)(ptr);
+			tab->shdr = (Elf64_Shdr *)(ptr + ehdr->e_shoff);
+			tab->symt = get_shdr(ptr, ".symtab");
+			tab->strt = get_shdr(ptr, ".strtab");
+			tab->shst = ehdr[shdr->sh_offset];
+		}
+	}
+	return (elf64_tab);
+}
+
 void	elf64(void *ptr)
 {
-	int			i;
-	Elf64_Ehdr	*ehdr;
-	Elf64_Shdr	*shdr;
-	Elf64_Shdr	*__sh_symtab;
-	Elf64_Shdr	*__sh_strtab;
-	Elf64_Shdr	*toto;
+	t_elf64_tab	*tab;
+	char		**syms;
+	int			nsyms;
+	int			index;
 
-	ehdr = (Elf64_Ehdr *)ptr;
-	shdr = (Elf64_Shdr *)(ptr + ehdr->e_shoff);
-	toto = &shdr[ehdr->e_shstrndx];
-
-	__sh_symtab = get_shdr(ptr, SHT_SYMTAB);
-	__sh_strtab = get_shdr(ptr, SHT_STRTAB);
-
-	i = -1;
-	while (++i < ehdr->e_shnum)
+	tab = init_elf64_tab(ptr);
+	if (tab && (tab->ehdr->e_machine == ELF_64 || tab->ehdr->e_machine == ELF_32))
 	{
-		printf("%2d %s\n", i, ptr + .sh_offset + shdr[i].sh_name);
+		nsyms = tab->symt->sh_size / sizeof(Elf64_Sym);
+		syms = malloc(sizeof(char *) * nsyms);
+		index = 0;
+		while (++index < nsyms)
+		{
+			// TODO: append symbols names to 'char **syms'.
+		}
 	}
 }
 
