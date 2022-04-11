@@ -1,37 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_new_chain.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/09 02:19:44 by aihya             #+#    #+#             */
-/*   Updated: 2018/10/28 15:28:28 by aihya            ###   ########.fr       */
+/*   Created: 2019/01/30 01:14:54 by aihya             #+#    #+#             */
+/*   Updated: 2019/01/30 09:23:39 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
+char	**ft_new_chain(char **base)
 {
-	size_t	size_1;
-	size_t	size_2;
-	size_t	i;
-	size_t	j;
+	int		i;
+	char	**new_chain;
 
-	size_1 = ft_strlen(src) + size;
-	size_2 = ft_strlen(src) + ft_strlen(dst);
-	i = ft_strlen(dst);
-	j = 0;
-	while (src[j] != '\0' && size != 0 && i < (size - 1))
+	i = 0;
+	if (base)
 	{
-		dst[i] = src[j];
-		j++;
-		i++;
+		new_chain = (char **)malloc(sizeof(char *) * (ft_chain_size(base) + 1));
+		while (base[i])
+		{
+			new_chain[i] = ft_strdup(base[i]);
+			i++;
+		}
 	}
-	if (size > 0)
-		dst[i] = '\0';
-	if (size_2 > size_1)
-		return (size_1);
-	return (size_2);
+	else
+		new_chain = (char **)malloc(sizeof(char *));
+	new_chain[i] = ft_strdup("\0");
+	return (new_chain);
 }

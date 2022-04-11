@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstiter.c                                       :+:      :+:    :+:   */
+/*   ft_wordlen.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/11 17:12:01 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/11 17:15:45 by hastid           ###   ########.fr       */
+/*   Created: 2018/10/27 01:01:40 by aihya             #+#    #+#             */
+/*   Updated: 2018/10/28 15:19:25 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <string.h>
 
-void	ft_lstiter(t_list *lst, void (*f)(t_list *elem))
+size_t	ft_wordlen(const char *s, char c)
 {
-	while (lst)
-	{
-		f(lst);
-		lst = lst->next;
-	}
+	size_t	i;
+
+	i = 0;
+	while (s[i] != c && s[i])
+		i++;
+	return (i);
 }

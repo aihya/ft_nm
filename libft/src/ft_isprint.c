@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/05 19:50:57 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/06 15:57:41 by hastid           ###   ########.fr       */
+/*   Created: 2018/10/05 15:52:50 by aihya             #+#    #+#             */
+/*   Updated: 2018/10/28 15:33:33 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 int		ft_isprint(int c)
 {
-	if (c >= 32 && c <= 126)
+	if ((unsigned int)c >= 32 && (unsigned int)c <= 126)
 		return (1);
-	else
-		return (0);
+	return (0);
 }

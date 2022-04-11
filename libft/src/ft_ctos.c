@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd.c                                        :+:      :+:    :+:   */
+/*   ft_ctos.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/11 17:00:07 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/11 19:30:42 by hastid           ###   ########.fr       */
+/*   Created: 2019/01/28 13:04:55 by aihya             #+#    #+#             */
+/*   Updated: 2019/01/28 13:48:13 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstadd(t_list **alst, t_list *new)
+char	*ft_ctos(const char c)
 {
-	new->next = (*alst);
-	*alst = new;
+	char	*s;
+
+	if (c < 0)
+		return (NULL);
+	s = (char *)malloc(sizeof(char) * 2);
+	s[0] = c;
+	s[1] = '\0';
+	return (s);
 }

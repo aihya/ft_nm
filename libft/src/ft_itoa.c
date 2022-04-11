@@ -3,38 +3,60 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/10 14:10:22 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/10 17:52:27 by hastid           ###   ########.fr       */
+/*   Created: 2019/03/13 07:50:20 by aihya             #+#    #+#             */
+/*   Updated: 2019/03/14 10:49:39 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+void	signed_n(char **buf)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin("-", *buf);
+	free(*buf);
+	*buf = ft_strdup(tmp);
+	free(tmp);
+}
+
+char	*exceptions(int n)
+{
+	if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	else if (n == 0)
+		return (ft_strdup("0"));
+	else
+		return (NULL);
+}
+
 char	*ft_itoa(int n)
 {
-	size_t			l;
-	char			*t;
-	unsigned int	nbr;
+	char	*tmp_1;
+	char	*tmp_2;
+	char	*buf;
+	int		is_signed;
+	char	*excep;
 
-	l = ft_nbrlen(n);
-	if (n < 0)
-		l++;
-	if ((t = (char *)malloc(l + 1)) != NULL)
+	if ((excep = exceptions(n)))
+		return (excep);
+	is_signed = 0;
+	if ((n < 0 && (n = n * (-1))))
+		is_signed = 1;
+	buf = ft_strdup("");
+	while (n)
 	{
-		t[l--] = '\0';
-		if (n == 0)
-			t[0] = '0';
-		if (n < 0)
-			t[0] = '-';
-		nbr = (n < 0) ? -n : n;
-		while (nbr)
-		{
-			t[l--] = (unsigned char)((nbr % 10) + '0');
-			nbr /= 10;
-		}
-		return (t);
+		tmp_1 = ft_ctos((n % 10) + 48);
+		tmp_2 = ft_strjoin(tmp_1, buf);
+		free(buf);
+		buf = ft_strdup(tmp_2);
+		free(tmp_2);
+		free(tmp_1);
+		n = n / 10;
 	}
-	return (NULL);
+	if (is_signed)
+		signed_n(&buf);
+	return (buf);
 }

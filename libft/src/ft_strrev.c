@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_strrev.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/09 02:19:44 by aihya             #+#    #+#             */
-/*   Updated: 2018/10/28 15:28:28 by aihya            ###   ########.fr       */
+/*   Created: 2018/10/13 20:07:32 by aihya             #+#    #+#             */
+/*   Updated: 2018/10/28 15:23:40 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
+char	*ft_strrev(char const *s)
 {
-	size_t	size_1;
-	size_t	size_2;
-	size_t	i;
-	size_t	j;
+	char	*s_rev;
+	int		i;
 
-	size_1 = ft_strlen(src) + size;
-	size_2 = ft_strlen(src) + ft_strlen(dst);
-	i = ft_strlen(dst);
-	j = 0;
-	while (src[j] != '\0' && size != 0 && i < (size - 1))
+	if (!s || !(s_rev = (char *)malloc(sizeof(char) * ((int)ft_strlen(s) + 1))))
+		return (NULL);
+	i = (int)ft_strlen(s);
+	while (i)
 	{
-		dst[i] = src[j];
-		j++;
-		i++;
+		s_rev[(int)ft_strlen(s) - i] = s[i - 1];
+		i--;
 	}
-	if (size > 0)
-		dst[i] = '\0';
-	if (size_2 > size_1)
-		return (size_1);
-	return (size_2);
+	s_rev[ft_strlen(s)] = '\0';
+	return (s_rev);
 }

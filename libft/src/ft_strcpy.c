@@ -3,23 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/05 16:52:04 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/07 22:20:11 by hastid           ###   ########.fr       */
+/*   Created: 2018/10/07 00:29:17 by aihya             #+#    #+#             */
+/*   Updated: 2018/10/28 16:13:27 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strcpy(char *dest, const char *src)
+char	*ft_strcpy(char *dst, const char *src)
 {
-	int i;
+	const char	*srccpy;
+	char		*dstcpy;
 
-	i = 0;
-	while (src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
+	srccpy = src;
+	dstcpy = dst;
+	while ((*dstcpy++ = *srccpy++))
+		;
+	return (dst);
 }

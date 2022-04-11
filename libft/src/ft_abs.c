@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdel.c                                        :+:      :+:    :+:   */
+/*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/11 16:43:44 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/11 16:58:06 by hastid           ###   ########.fr       */
+/*   Created: 2018/10/23 05:37:29 by aihya             #+#    #+#             */
+/*   Updated: 2019/07/30 13:58:13 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-void	ft_lstdel(t_list **alst, void (*del)(void *, size_t))
+int		ft_abs(int n)
 {
-	t_list	*tmp;
-
-	while (*alst)
-	{
-		tmp = (*alst)->next;
-		ft_lstdelone(alst, del);
-		(*alst) = tmp;
-	}
-	(*alst) = NULL;
+	if (n < 0)
+		return (n * (-1));
+	return (n);
 }

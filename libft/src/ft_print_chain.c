@@ -1,20 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelone.c                                     :+:      :+:    :+:   */
+/*   ft_print_chain.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <abdechahid.ihya@hotmail.c>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/10 16:29:34 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/11 16:42:10 by hastid           ###   ########.fr       */
+/*   Created: 2019/05/03 20:19:42 by aihya             #+#    #+#             */
+/*   Updated: 2019/05/03 20:38:03 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstdelone(t_list **alst, void (*del)(void *, size_t))
+void	ft_print_chain(char ***a_chain, char *del)
 {
-	del((*alst)->content, (*alst)->content_size);
-	free(*alst);
-	*alst = NULL;
+	char	**chain;
+	size_t	i;
+
+	if (a_chain == NULL)
+		return ;
+	chain = *a_chain;
+	i = 0;
+	while (chain[i])
+	{
+		ft_putstr(chain[i]);
+		ft_putstr(del);
+		i++;
+	}
 }

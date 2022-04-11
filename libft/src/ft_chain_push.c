@@ -1,25 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_chain_size.c                                    :+:      :+:    :+:   */
+/*   ft_chain_push.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/12 12:48:49 by aihya             #+#    #+#             */
-/*   Updated: 2019/06/30 15:52:29 by aihya            ###   ########.fr       */
+/*   Created: 2019/02/09 02:59:51 by aihya             #+#    #+#             */
+/*   Updated: 2019/06/28 11:21:01 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include <stdio.h>
 
-size_t	ft_chain_size(char **chain)
+void		ft_chain_push(char ***a_chain, char *entry)
 {
+	char	**new;
 	size_t	size;
+	size_t	i;
 
-	if (chain == NULL)
-		return (0);
-	size = 0;
-	while (chain[size] != NULL)
-		size++;
-	return (size);
+	size = ft_chain_size(*a_chain);
+	new = (char **)malloc(sizeof(char *) * (size + 2));
+	i = 0;
+	while (i < size)
+	{
+		new[i] = ft_strdup((*a_chain)[i]);
+		i++;
+	}
+	new[i] = ft_strdup(entry);
+	i++;
+	new[i] = NULL;
+	ft_chain_free(a_chain);
+	*a_chain = new;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strojoin.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
+/*   By: aihya <aihya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/20 16:46:55 by aihya             #+#    #+#             */
-/*   Updated: 2019/12/22 17:01:08 by aihya            ###   ########.fr       */
+/*   Updated: 2019/06/30 15:50:27 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strojoin(char **s1, char *s2, int overwrite)
 	if (overwrite)
 	{
 		tmp = ft_strjoin((const char *)(*s1), (const char *)s2);
-		ft_strdel(s1);
+		free(*s1);
 		(*s1) = tmp;
 		return (NULL);
 	}

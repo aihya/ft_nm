@@ -1,35 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_ret.c                                    :+:      :+:    :+:   */
+/*   ft_strmin.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/08 17:34:13 by hastid            #+#    #+#             */
-/*   Updated: 2020/02/23 00:45:09 by llachgar         ###   ########.fr       */
+/*   Created: 2019/07/28 15:52:00 by aihya             #+#    #+#             */
+/*   Updated: 2019/07/28 17:40:51 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_putstr_err_ret(const char *str, int ret)
+size_t	ft_strmin(char **arr)
 {
-	int	i;
+	size_t	size;
+	size_t	min;
+	int		i;
 
+	if (arr == NULL)
+		return (0);
 	i = 0;
-	if (str)
-		while (str[i])
-			write(2, &str[i++], 1);
-	return (ret);
-}
-
-int		ft_putstr_ret(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str)
-		while (str[i])
-			write(1, &str[i++], 1);
-	return (i);
+	min = ft_strlen(arr[0]);
+	while (arr[i])
+	{
+		size = ft_strlen(arr[i]);
+		min = size < min ? size : min;
+	}
+	return (min);
 }

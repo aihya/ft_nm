@@ -3,34 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/05 18:14:43 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/08 13:49:39 by hastid           ###   ########.fr       */
+/*   Created: 2018/10/09 23:56:01 by aihya             #+#    #+#             */
+/*   Updated: 2018/10/28 15:34:57 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strrchr(const char *str, int c)
-{
-	unsigned char	v;
-	char			*us;
-	int				t;
+#include "libft.h"
 
-	t = 0;
-	v = c;
-	us = (char *)str;
-	while (*str)
+char	*ft_strrchr(const char *s, int c)
+{
+	int		i;
+	int		pos;
+	char	conv_c;
+
+	i = 0;
+	pos = -1;
+	conv_c = (char)c;
+	if (conv_c == '\0')
+		return ((char *)s + ft_strlen(s));
+	while (s[i] != '\0')
 	{
-		if (*str == v)
-		{
-			us = (char *)str;
-			t = 1;
-		}
-		str++;
+		if (s[i] == conv_c)
+			pos = i;
+		i++;
 	}
-	if (*str || (*str == '\0' && v == '\0'))
-		return ((char *)str);
-	if (t)
-		return (us);
-	return (0);
+	if (pos == -1)
+		return (NULL);
+	return ((char *)s + (pos));
 }

@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstlen.c                                        :+:      :+:    :+:   */
+/*   ft_words.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/11 17:34:03 by hastid            #+#    #+#             */
-/*   Updated: 2018/10/11 17:42:42 by hastid           ###   ########.fr       */
+/*   Created: 2018/10/23 05:50:19 by aihya             #+#    #+#             */
+/*   Updated: 2018/10/28 15:19:34 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-size_t	ft_lstlen(t_list *lst)
+int		ft_words(char const *s, char c)
 {
-	size_t	i;
-	t_list	*t;
+	int	i;
+	int	n;
 
 	i = 0;
-	t = lst;
-	while (t)
+	n = 0;
+	if (!s)
+		return (0);
+	while (s[i])
 	{
+		if (s[i] == c && s[i + 1] != c)
+			n++;
 		i++;
-		t = t->next;
 	}
-	return (i);
+	return (n);
 }
