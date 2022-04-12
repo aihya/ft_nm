@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/12 17:04:45 by aihya            ###   ########.fr        #
+#    Updated: 2022/04/12 22:13:35 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ SRC_NAME =	elf.c \
 			elf32.c \
 			elf64.c \
 			sort.c \
+			show64.c \
 			main.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)

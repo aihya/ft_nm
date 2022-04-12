@@ -52,6 +52,7 @@ Elf64_Shdr      *elf64_shdr(void *ptr, char *target, t_elf64 *elf);
 t_node			*elf64_syms(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
 t_node			*elf64_secs(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
 void            sort(t_node *nodes, size_t size);
+void			elf64_show(t_node *node);
 
 // ELF 32
 void            elf32(void *ptr);

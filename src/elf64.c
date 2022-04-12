@@ -71,7 +71,6 @@ void        elf64(void *ptr)
     elf = elf64_init(ptr);
     if (elf)
     {
-
         size = (elf->symt->sh_size / sizeof(Elf64_Sym));
         nodes = (t_node *)malloc(sizeof(t_node) * size);
         if (nodes)
@@ -86,24 +85,7 @@ void        elf64(void *ptr)
             {
                 if (nodes[idx].object == NULL && ++idx)
                     continue ;
-                if (nodes[idx].type == ELF_SEC)
-                {
-                    if (((Elf64_Shdr *)nodes[idx].object)->sh_addr == 0)
-                        ft_putstr("                ");
-                    else
-                        ft_putnbr_base(((Elf64_Shdr *)nodes[idx].object)->sh_addr, 16, 16);
-                    ft_putchar(' ');
-                    ft_putendl(nodes[idx].name);
-                }
-                else if (nodes[idx].type == ELF_SYM)
-                {
-                    if (((Elf64_Sym *)nodes[idx].object)->st_value == 0)
-                        ft_putstr("                ");
-                    else
-                        ft_putnbr_base(((Elf64_Sym *)nodes[idx].object)->st_value, 16, 16);
-                    ft_putchar(' ');
-                    ft_putendl(nodes[idx].name);
-                }
+                elf64_show(&nodes[idx]);
                 idx++;
             }
         }
