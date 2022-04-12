@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aihya <aihya@student.42.fr>                +#+  +:+       +#+         #
+#    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2019/07/29 18:47:09 by aihya            ###   ########.fr        #
+#    Updated: 2022/04/12 15:11:53 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,7 +88,9 @@ SRC_NAME =	ft_abs.c \
 			ft_wordlen.c \
 			ft_words.c \
 			ft_strmax.c \
-			ft_strmin.c
+			ft_strmin.c \
+			ft_nbr_base.c \
+			ft_putnbr_base.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)
 
@@ -105,7 +107,7 @@ all : $(NAME)
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 	@mkdir $(OBJ_PATH) 2>/dev/null || true
 	@echo "Compiling \033[1;33m[$<]\033[0m to \033[1;32m[$@]\033[0m"
-	@gcc $(CFLAGS) -I include -o $@ -c $<
+	@gcc $(CFLAGS) -Iinclude -o $@ -c $<
 
 $(NAME) : $(OBJ)
 	@echo "\033[1;34mCreating $(NAME)\033[0m"

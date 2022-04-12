@@ -1,10 +1,5 @@
-#ifndef __FT_NM_H__
-# define __FT_NM_H__
-
-# define ELF_32	EM_386
-# define ELF_64	EM_X86_64
-# define ELF_SYM 0
-# define ELF_SEC 1
+#ifndef FT_NM_H
+# define FT_NM_H
 
 # include <stdio.h>
 # include <fcntl.h>
@@ -14,6 +9,14 @@
 # include <elf.h>
 # include <sys/types.h>
 # include <string.h>
+# include "libft.h"
+
+# define ELF_32	EM_386
+# define ELF_64	EM_X86_64
+# define ELF_SYM 0
+# define ELF_SEC 1
+# define ERR_NO_SYMS 0
+# define ERR_FILE_NOT_FOUND 1
 
 typedef struct  s_elf64
 {
@@ -48,6 +51,7 @@ t_elf64         *elf64_init(void *ptr);
 Elf64_Shdr      *elf64_shdr(void *ptr, char *target, t_elf64 *elf);
 t_node			*elf64_syms(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
 t_node			*elf64_secs(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
+void            sort(t_node *nodes, size_t size);
 
 // ELF 32
 void            elf32(void *ptr);
