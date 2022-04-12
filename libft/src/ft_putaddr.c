@@ -1,18 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar.c                                       :+:      :+:    :+:   */
+/*   ft_putaddr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/07 21:46:57 by aihya             #+#    #+#             */
-/*   Updated: 2021/12/20 19:24:48 by aihya            ###   ########.fr       */
+/*   Created: 2021/06/30 12:51:06 by aihya             #+#    #+#             */
+/*   Updated: 2021/12/23 19:00:29 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_malloc.h"
 
-void	ft_putchar(char c)
+void	ft_putaddr(void *addr, int prefix, int newline, int padding)
 {
-	write(1, &c, 1);
+	if (prefix)
+		ft_putstr("0x");
+	ft_putnbr_base((unsigned long long)addr, 16, padding);
+	if (newline)
+		ft_putchar('\n');
 }

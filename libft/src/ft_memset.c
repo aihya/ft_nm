@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/06 16:59:09 by aihya             #+#    #+#             */
-/*   Updated: 2018/10/28 16:14:08 by aihya            ###   ########.fr       */
+/*   Updated: 2021/12/24 16:08:50 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,16 @@
 
 void	*ft_memset(void *b, int c, size_t len)
 {
-	unsigned char	*b_cpy;
-	unsigned char	c_cpy;
-	int				range;
+	size_t	i;
 
-	range = 0;
-	b_cpy = (unsigned char *)b;
-	c_cpy = (unsigned char)c;
-	while (range < (int)len)
+	if (b != NULL)
 	{
-		b_cpy[range] = c_cpy;
-		range++;
+		i = 0;
+		while (i < len)
+		{
+			*((unsigned char *)b + i) = (unsigned char)c;
+			i++;
+		}
 	}
-	return (b_cpy);
+	return (b);
 }

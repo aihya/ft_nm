@@ -3,26 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aihya <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/07 22:55:15 by aihya             #+#    #+#             */
-/*   Updated: 2018/10/28 16:13:55 by aihya            ###   ########.fr       */
+/*   Updated: 2021/12/20 19:25:09 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "libft.h"
 
 void	ft_putstr(char const *s)
 {
 	int		i;
 
-	if (s)
+	i = 0;
+	while (s && s[i])
 	{
-		i = 0;
-		while (s[i])
-		{
-			write(1, &s[i], 1);
-			i++;
-		}
+		write(1, &s[i], 1);
+		i++;
 	}
 }

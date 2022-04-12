@@ -12,19 +12,20 @@
 
 #include "libft.h"
 
-char	*ft_strrev(char const *s)
+void	ft_strrev(char *str)
 {
-	char	*s_rev;
 	int		i;
+	int		len;
+	char	byte;
 
-	if (!s || !(s_rev = (char *)malloc(sizeof(char) * ((int)ft_strlen(s) + 1))))
-		return (NULL);
-	i = (int)ft_strlen(s);
-	while (i)
+	if (!str)
+		return ;
+	i = -1;
+	len = ft_strlen(str);
+	while (++i < --len)
 	{
-		s_rev[(int)ft_strlen(s) - i] = s[i - 1];
-		i--;
+		byte = str[i];
+		str[i] = str[len];
+		str[len] = byte;
 	}
-	s_rev[ft_strlen(s)] = '\0';
-	return (s_rev);
 }

@@ -15,6 +15,8 @@
 
 # include <string.h>
 # include <stdlib.h>
+# include <unistd.h>
+# include <limits.h>
 
 # define BEGINING 0
 # define LAST_POS -1
@@ -35,7 +37,7 @@ void		ft_putendl(char const *s);
 char		*ft_strjoin(char const *s1, char const *s2);
 char		*ft_strojoin(char **s1, char *s2, int overwrite);
 char		*ft_strtrim(char const *s);
-char		*ft_strrev(char const *s);
+void		ft_strrev(char *s);
 char		*ft_strstr(const char *haystack, const char *needle);
 char		**ft_new_chain(char **base);
 char		**ft_sort_chain(char **chain, int direction);
@@ -89,12 +91,13 @@ int			ft_strnequ(char const *s1, char const *s2, size_t n);
 char		*ft_strsub(char const *s, unsigned int start, size_t len);
 void		ft_putchar_fd(char c, int fd);
 void		ft_putstr_fd(char const *c, int fd);
-void		ft_putnbr(int n);
+void		ft_putnbr(long long n);
 void		ft_putnbr_fd(int n, int fd);
 char		*ft_strsjoin(const char *s1, const char *s2, const char *dl);
 int			ft_begins_with(const char *haystack, const char *needle);
 char		**ft_strsplit(char const *s, char c);
 size_t		ft_strmax(char **arr);
 size_t		ft_strmin(char **arr);
+char		*ft_nbr_base(unsigned long long n, unsigned int base, int padding);
 
 #endif
