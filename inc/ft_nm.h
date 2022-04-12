@@ -3,6 +3,8 @@
 
 # define ELF_32	EM_386
 # define ELF_64	EM_X86_64
+# define ELF_SYM 0
+# define ELF_SEC 1
 
 # include <stdio.h>
 # include <fcntl.h>
@@ -15,42 +17,43 @@
 
 typedef struct  s_elf64
 {
+	char		*shst;  // section header string table
+	char		*strt;  // string table section header
 	Elf64_Ehdr  *ehdr;  // ELF header
-	Elf64_Shdr  *shdr;  // section header
-	Elf64_Shdr  *shst;  // section header string table
-	Elf64_Shdr  *symt;  // symbol table
-	Elf64_Shdr  *strt;  // string table
+	Elf64_Shdr  *shdr;  // section headers
+	Elf64_Shdr	*symt;  // symbol table section header
+	Elf64_Sym	*syms;	// symbol table
 }               t_elf64;
 
 typedef struct  s_elf32
 {
+	char		*shst;  // section header string table
+	char		*strt;  // string table section header
 	Elf32_Ehdr  *ehdr;  // ELF header
-	Elf32_Shdr  *shdr;  // section header
-	Elf32_Shdr  *shst;  // section header string table
-	Elf32_Shdr  *symt;  // symbol table
-	Elf32_Shdr  *strt;  // string table
+	Elf32_Shdr  *shdr;  // section headers
+	Elf32_Shdr	*symt;  // symbol table section header
+	Elf32_Sym	*syms;	// symbol table
 }               t_elf32;
 
-typedef struct  s_dict
+typedef struct  s_node
 {
-    uint64_t    name;
-    uint64_t    type;
-    uint64_t    addr;
-}               t_dict;
-
+    void			*object;
+	char			*name;
+	uint64_t		type;
+}               t_node;
 
 // ELF 64
 void            elf64(void *ptr);
 t_elf64         *elf64_init(void *ptr);
-Elf64_Shdr      *elf64_shdr(void *ptr, char *name, t_elf64 *elf);
-char            **elf64_symtab_names(t_elf64 *tab);
-char            **elf64_sections_names(t_elf64 *tab);
+Elf64_Shdr      *elf64_shdr(void *ptr, char *target, t_elf64 *elf);
+t_node			*elf64_syms(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
+t_node			*elf64_secs(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
 
 // ELF 32
 void            elf32(void *ptr);
 t_elf32         *elf32_init(void *ptr);
-Elf32_Shdr      *elf32_shdr(void *ptr, char *name, t_elf32 *elf);
-char            **elf32_symtab_names(t_elf32 *tab);
-char            **elf32_sections_names(t_elf32 *tab);
+Elf32_Shdr      *elf32_shdr(void *ptr, char *target, t_elf32 *elf);
+char            **elf32_syms(void *ptr, t_elf32 *elf, t_node *nodex, int *idx);
+char            **elf32_secs(void *ptr, t_elf32 *elf, t_node *nodex, int *idx);
 
 #endif
