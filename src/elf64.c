@@ -85,7 +85,7 @@ void        elf64(void *ptr)
             {
                 if (nodes[idx].object == NULL && ++idx)
                     continue ;
-                elf64_show(&nodes[idx]);
+                elf64_show(elf, &nodes[idx]);
                 idx++;
             }
         }
