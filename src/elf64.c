@@ -41,54 +41,45 @@ Elf64_Shdr  *elf64_shdr(void *ptr, char *target, t_elf64 *elf)
     return (NULL);
 }
 
-t_node      *elf64_syms(void *ptr, t_elf64 *elf, t_node *nodes, int *idx)
+static t_node   *concatenate(t_node *syms, t_node *secs)
 {
-    while (++(*idx) < elf->symt->sh_size / sizeof(Elf64_Sym))
-    {
-        nodes[*idx].object = (void *)(&elf->syms[*idx]);
-        nodes[*idx].name = elf->strt + elf->syms[*idx].st_name;
-        nodes[*idx].type = ELF_SYM;
-    }
-}
+    t_node  *node;
 
-t_node      *elf64_secs(void *ptr, t_elf64 *elf, t_node *nodes, int *idx)
-{
-    while (++(*idx) < elf->ehdr->e_shnum)
-    {
-        nodes[*idx].object = (void *)(&elf->shdr[*idx]);
-        nodes[*idx].name = elf->shst + elf->shdr[*idx].sh_name;
-        nodes[*idx].type = ELF_SEC;
-    }
+    if (syms == NULL)
+        return (secs);
+    if (secs == NULL)
+        return (syms);
+    node = syms;
+    while (node && node->next)
+        node = node->next;
+    node->next = secs;
+    return (syms);
 }
 
 void        elf64(void *ptr)
 {
     t_elf64 *elf;
-    t_node  *nodes;
+    t_node  *syms;
+    t_node  *secs;
+    t_node  *node;
     size_t  size;
     int     idx;
 
+    size = 0;
     elf = elf64_init(ptr);
     if (elf)
     {
-        size = (elf->symt->sh_size / sizeof(Elf64_Sym));
-        nodes = (t_node *)malloc(sizeof(t_node) * size);
-        if (nodes)
+        syms = elf64_syms(ptr, elf, &size);
+        secs = elf64_secs(ptr, elf, &size);
+        syms = concatenate(syms, secs);
+        sort(syms);
+        node = syms;
+        while (node)
         {
-            idx = 0;
-            elf64_secs(ptr, elf, nodes, &idx);
-            elf64_syms(ptr, elf, nodes, &idx);
-            sort(nodes, idx);
-            size = idx;
-            idx = 0;
-            while ((size_t)idx < size)
-            {
-                if (nodes[idx].object == NULL && ++idx)
-                    continue ;
-                elf64_show(elf, &nodes[idx]);
-                idx++;
-            }
+            // ft_putendl(node->name);
+            if (node->object)
+                elf64_show(elf, node);
+            node = node->next;
         }
     }
 }
-

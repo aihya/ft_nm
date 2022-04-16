@@ -13,10 +13,13 @@
 
 # define ELF_32	EM_386
 # define ELF_64	EM_X86_64
-# define ELF_SYM 0
-# define ELF_SEC 1
+# define ELF_SYM 1
+# define ELF_SEC 2
 # define ERR_NO_SYMS 0
 # define ERR_FILE_NOT_FOUND 1
+
+typedef enum {GLOBAL, LOCAL, WEAK, UNIQUE} e_bind;
+typedef enum {NOTYPE, FILE_, OBJECT, FUNC, SECTION} e_type;
 
 typedef struct  s_elf64
 {
@@ -43,22 +46,22 @@ typedef struct  s_node
     void			*object;
 	char			*name;
 	uint64_t		type;
+	struct s_node	*next;
 }               t_node;
 
+// Utils
+void			alloc_node(t_node **head, t_node **curr);
+void			sort(t_node *nodes);
+
 // ELF 64
-void            elf64(void *ptr);
-t_elf64         *elf64_init(void *ptr);
-Elf64_Shdr      *elf64_shdr(void *ptr, char *target, t_elf64 *elf);
-t_node			*elf64_syms(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
-t_node			*elf64_secs(void *ptr, t_elf64 *elf, t_node *nodex, int *idx);
-void            sort(t_node *nodes, size_t size);
+void			elf64(void *ptr);
+t_elf64			*elf64_init(void *ptr);
+Elf64_Shdr		*elf64_shdr(void *ptr, char *target, t_elf64 *elf);
+t_node			*elf64_syms(void *ptr, t_elf64 *elf, size_t *size);
+t_node			*elf64_secs(void *ptr, t_elf64 *elf, size_t *size);
 void			elf64_show(t_elf64 *elf, t_node *node);
 
 // ELF 32
-void            elf32(void *ptr);
-t_elf32         *elf32_init(void *ptr);
-Elf32_Shdr      *elf32_shdr(void *ptr, char *target, t_elf32 *elf);
-char            **elf32_syms(void *ptr, t_elf32 *elf, t_node *nodex, int *idx);
-char            **elf32_secs(void *ptr, t_elf32 *elf, t_node *nodex, int *idx);
+
 
 #endif
