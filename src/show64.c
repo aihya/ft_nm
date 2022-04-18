@@ -18,29 +18,26 @@ static void print64_addr(t_node *node)
     }
 }
 
-static unsigned char    elf64_sec_char(Elf64_Shdr *sec)
+static unsigned char    elf64_char(uint64_t t, uint64_t f, uint64_t i)
 {
-    uint64_t    type;
-    uint64_t    flag;
-
-    type = sec->sh_type;
-    flag = sec->sh_flags;
-
-    if (type == SHT_NOBITS && flag == SHF_ALLOC + SHF_WRITE)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sec->sh_info), 'b'));
-    if ((type == SHT_PROGBITS || type == SHT_DYNAMIC || type == SHT_FINI_ARRAY || type == SHT_INIT_ARRAY) && flag == SHF_ALLOC + SHF_WRITE)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sec->sh_info), 'd'));
-    if (type == SHT_PROGBITS && flag == SHF_ALLOC + SHF_EXECINSTR)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sec->sh_info), 't'));
-    if ((type == SHT_PROGBITS || type == SHT_STRTAB || type == SHT_DYNSYM || type == SHT_NOTE) && flag & SHF_ALLOC)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sec->sh_info), 'r'));
-    if (type == SHT_GNU_versym || type == SHT_GNU_HASH || type == SHT_GNU_verneed || type == SHT_GNU_verdef)
-        return SWITCH_GLOBAL(ELF64_ST_BIND(sec->sh_info), 'r');
-    if (type == SHT_PROGBITS)
+    if ((TYPE_b(t)) && FLAG_b(f))
+        return (SWITCH_GLOBAL(ELF64_ST_BIND(i), 'b'));
+    if ((TYPE_d(t)) && FLAG_d(f))
+        return (SWITCH_GLOBAL(ELF64_ST_BIND(i), 'd'));
+    if ((TYPE_t(t)) && FLAG_t(f))
+        return (SWITCH_GLOBAL(ELF64_ST_BIND(i), 't'));
+    if ((TYPE_r(t)) && FLAG_r(f))
+        return (SWITCH_GLOBAL(ELF64_ST_BIND(i), 'r'));
+    if ((TYPE_n(t)))
         return ('n');
-    if (type == SHT_RELA || type == SHT_REL)
+    if (t == SHT_RELA || t == SHT_REL)
         return ('r');
     return (' ');
+}
+
+static unsigned char    elf64_sec_char(Elf64_Shdr *sec)
+{
+    return (elf64_char(sec->sh_type, sec->sh_flags, sec->sh_info));
 }
 
 static unsigned char    elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
@@ -69,20 +66,7 @@ static unsigned char    elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
 
     type = elf->shdr[sym->st_shndx].sh_type;
     flag = elf->shdr[sym->st_shndx].sh_flags;
-
-    if (type == SHT_NOBITS && flag == SHF_ALLOC + SHF_WRITE)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 'b'));
-    if ((type == SHT_PROGBITS || type == SHT_DYNAMIC || type == SHT_FINI_ARRAY || type == SHT_INIT_ARRAY) && flag == SHF_ALLOC + SHF_WRITE)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 'd'));
-    if (type == SHT_PROGBITS && flag == SHF_ALLOC + SHF_EXECINSTR)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 't'));
-    if ((type == SHT_PROGBITS || type == SHT_STRTAB || type == SHT_DYNSYM || type == SHT_NOTE) && flag & SHF_ALLOC)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 'r'));
-    if (type == SHT_PROGBITS)
-        return ('n');
-    if (type == SHT_RELA || type == SHT_REL)
-        return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 'r'));
-    return (' ');
+    return (elf64_char(type, flag, sym->st_info));
 }
 
 void        print64(t_elf64 *elf, t_node *node)

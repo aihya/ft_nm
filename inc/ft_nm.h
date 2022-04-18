@@ -19,9 +19,25 @@
 # define ERR_FILE_NOT_FOUND 1
 
 # define SWITCH_GLOBAL(i, c) (c - 32 * (i == STB_GLOBAL))
-
-typedef enum {GLOBAL, LOCAL, WEAK, UNIQUE} e_bind;
-typedef enum {NOTYPE, FILE_, OBJECT, FUNC, SECTION} e_type;
+# define TYPE_d(t) (t == SHT_INIT_ARRAY || \
+					t == SHT_DYNAMIC || \
+					t == SHT_FINI_ARRAY || \
+					t == SHT_PROGBITS)
+# define TYPE_r(t) (t == SHT_STRTAB || \
+					t == SHT_PROGBITS || \
+					t == SHT_DYNSYM || \
+					t == SHT_NOTE || \
+					t == SHT_GNU_verdef || \
+					t == SHT_GNU_HASH || \
+					t == SHT_GNU_versym || \
+					t == SHT_GNU_verneed)
+# define TYPE_b(t) (t == SHT_NOBITS)
+# define TYPE_t(t) (t == SHT_PROGBITS)
+# define TYPE_n(t) (t == SHT_PROGBITS)
+# define FLAG_b(f) (f == SHF_ALLOC + SHF_WRITE)
+# define FLAG_d(f) (f == SHF_ALLOC + SHF_WRITE)
+# define FLAG_t(f) (f == SHF_ALLOC + SHF_EXECINSTR)
+# define FLAG_r(f) (f & SHF_ALLOC)
 
 typedef struct  s_elf64
 {
