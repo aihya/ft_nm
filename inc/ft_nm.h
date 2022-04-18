@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_nm.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
+/*   Updated: 2022/04/18 16:57:05 by aihya            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FT_NM_H
 # define FT_NM_H
 
@@ -18,68 +30,51 @@
 # define ERR_NO_SYMS 0
 # define ERR_FILE_NOT_FOUND 1
 
-# define SWITCH_GLOBAL(i, c) (c - 32 * (i == STB_GLOBAL))
-# define TYPE_d(t) (t == SHT_INIT_ARRAY || \
-					t == SHT_DYNAMIC || \
-					t == SHT_FINI_ARRAY || \
-					t == SHT_PROGBITS)
-# define TYPE_r(t) (t == SHT_STRTAB || \
-					t == SHT_PROGBITS || \
-					t == SHT_DYNSYM || \
-					t == SHT_NOTE || \
-					t == SHT_GNU_verdef || \
-					t == SHT_GNU_HASH || \
-					t == SHT_GNU_versym || \
-					t == SHT_GNU_verneed)
-# define TYPE_b(t) (t == SHT_NOBITS)
-# define TYPE_t(t) (t == SHT_PROGBITS)
-# define TYPE_n(t) (t == SHT_PROGBITS)
-# define FLAG_b(f) (f == SHF_ALLOC + SHF_WRITE)
-# define FLAG_d(f) (f == SHF_ALLOC + SHF_WRITE)
-# define FLAG_t(f) (f == SHF_ALLOC + SHF_EXECINSTR)
-# define FLAG_r(f) (f & SHF_ALLOC)
-
-typedef struct  s_elf64
+typedef struct s_elf64
 {
-	char		*shst;  // section header string table
-	char		*strt;  // string table section header
-	Elf64_Ehdr  *ehdr;  // ELF header
-	Elf64_Shdr  *shdr;  // section headers
-	Elf64_Shdr	*symt;  // symbol table section header
-	Elf64_Sym	*syms;	// symbol table
-}               t_elf64;
+	char		*shst;
+	char		*strt;
+	Elf64_Ehdr	*ehdr;
+	Elf64_Shdr	*shdr;
+	Elf64_Shdr	*symt;
+	Elf64_Sym	*syms;
+}	t_elf64;
 
-typedef struct  s_elf32
+typedef struct s_elf32
 {
-	char		*shst;  // section header string table
-	char		*strt;  // string table section header
-	Elf32_Ehdr  *ehdr;  // ELF header
-	Elf32_Shdr  *shdr;  // section headers
-	Elf32_Shdr	*symt;  // symbol table section header
-	Elf32_Sym	*syms;	// symbol table
-}               t_elf32;
+	char		*shst;
+	char		*strt;
+	Elf32_Ehdr	*ehdr;
+	Elf32_Shdr	*shdr;
+	Elf32_Shdr	*symt;
+	Elf32_Sym	*syms;
+}	t_elf32;
 
-typedef struct  s_node
+typedef struct s_node
 {
-    void			*object;
+	void			*object;
 	char			*name;
 	uint64_t		type;
 	struct s_node	*next;
-}               t_node;
+}	t_node;
 
-// Utils
 void			alloc_node(t_node **head, t_node **curr);
-void			sort(t_node *nodes); 
+void			sort(t_node *nodes);
+uint64_t int	flag_b(uint64_t flag);
+uint64_t int	flag_d(uint64_t flag);
+uint64_t int	flag_b(uint64_t flag);
+uint64_t int	flag_b(uint64_t flag);
+unsigned int	type_d(uint64_t type);
+unsigned int	type_r(uint64_t type);
+unsigned int	type_b(uint64_t type);
+unsigned int	type_t(uint64_t type);
+unsigned int	type_n(uint64_t type);
 
-// ELF 64
 void			elf64(void *ptr);
 t_elf64			*elf64_init(void *ptr);
 Elf64_Shdr		*elf64_shdr(void *ptr, char *target, t_elf64 *elf);
 t_node			*elf64_syms(t_elf64 *elf, size_t *size);
 t_node			*elf64_secs(void *ptr, t_elf64 *elf, size_t *size);
 void			print64(t_elf64 *elf, t_node *node);
-
-// ELF 32
-
 
 #endif
