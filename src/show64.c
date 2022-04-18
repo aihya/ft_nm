@@ -28,6 +28,8 @@ static unsigned char    elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
     uint64_t    type;
     uint64_t    flag;
 
+    ft_putnbr_base(sym->st_info, 10, 5);
+    ft_putchar(' ');
     if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
     {
         if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT)
@@ -57,7 +59,7 @@ static unsigned char    elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
         return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 'd'));
     else if (type == SHT_PROGBITS && flag & SHF_ALLOC && flag & SHF_EXECINSTR)
         return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 't'));
-    else if (type == SHT_PROGBITS && flag & SHF_AL  LOC)
+    else if (type == SHT_PROGBITS && flag & SHF_ALLOC)
         return (SWITCH_GLOBAL(ELF64_ST_BIND(sym->st_info), 'r'));
     return (' ');
 }
