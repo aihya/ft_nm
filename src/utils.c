@@ -1,33 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   flags.c                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 16:55:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 17:41:49 by aihya            ###   ########.fr       */
+/*   Created: 2022/04/18 17:51:53 by aihya             #+#    #+#             */
+/*   Updated: 2022/04/18 18:09:00 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-unsigned int	flag_b(uint64_t flag)
+void	alloc_node(t_node **head, t_node **curr)
 {
-	return (flag == SHF_ALLOC + SHF_WRITE);
+	if (*head == NULL)
+	{
+		*head = (t_node *)malloc(sizeof(t_node));
+		*curr = *head;
+	}
+	else
+	{
+		(*curr)->next = (t_node *)malloc(sizeof(t_node));
+		*curr = (*curr)->next;
+	}
 }
 
-unsigned int	flag_d(uint64_t flag)
+unsigned char	switch_global(uint64_t info, char c)
 {
-	return (flag == SHF_ALLOC + SHF_WRITE);
-}
-
-unsigned int	flag_t(uint64_t flag)
-{
-	return (flag == SHF_ALLOC + SHF_EXECINSTR);
-}
-
-unsigned int	flag_r(uint64_t flag)
-{
-	return (flag & SHF_ALLOC);
+	return (c - 32 * (info == STB_GLOBAL));
 }

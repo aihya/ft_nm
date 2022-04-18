@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 16:57:05 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/18 18:57:49 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,11 @@ typedef struct s_node
 
 void			alloc_node(t_node **head, t_node **curr);
 void			sort(t_node *nodes);
-uint64_t int	flag_b(uint64_t flag);
-uint64_t int	flag_d(uint64_t flag);
-uint64_t int	flag_b(uint64_t flag);
-uint64_t int	flag_b(uint64_t flag);
+unsigned char	switch_global(uint64_t info, char c);
+unsigned int	flag_b(uint64_t flag);
+unsigned int	flag_d(uint64_t flag);
+unsigned int	flag_t(uint64_t flag);
+unsigned int	flag_r(uint64_t flag);
 unsigned int	type_d(uint64_t type);
 unsigned int	type_r(uint64_t type);
 unsigned int	type_b(uint64_t type);
@@ -74,7 +75,14 @@ void			elf64(void *ptr);
 t_elf64			*elf64_init(void *ptr);
 Elf64_Shdr		*elf64_shdr(void *ptr, char *target, t_elf64 *elf);
 t_node			*elf64_syms(t_elf64 *elf, size_t *size);
-t_node			*elf64_secs(void *ptr, t_elf64 *elf, size_t *size);
+t_node			*elf64_secs(t_elf64 *elf, size_t *size);
 void			print64(t_elf64 *elf, t_node *node);
+
+void			elf32(void *ptr);
+t_elf32			*elf32_init(void *ptr);
+Elf32_Shdr		*elf32_shdr(void *ptr, char *target, t_elf32 *elf);
+t_node			*elf32_syms(t_elf32 *elf, size_t *size);
+t_node			*elf32_secs(t_elf32 *elf, size_t *size);
+void			print32(t_elf32 *elf, t_node *node);
 
 #endif

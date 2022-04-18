@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/18 15:50:55 by aihya            ###   ########.fr        #
+#    Updated: 2022/04/18 18:43:28 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,11 +16,17 @@ NAME = ft_nm
 
 SRC_NAME =	elf.c \
 			elf32.c \
+			elf32_syms.c \
+			elf32_secs.c \
+			elf64.c \
 			elf64_syms.c \
 			elf64_secs.c \
-			elf64.c \
-			sort.c \
+			show32.c \
 			show64.c \
+			flags.c \
+			types.c \
+			sort.c \
+			utils.c \
 			main.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)
@@ -44,13 +50,13 @@ all : $(NAME)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c $(HEADER)
 	@mkdir -p $(OBJ_PATH) 
-	gcc $(CFLAGS) $(INCLUDE) -Llibft -lft -o $@ -c $<
+	gcc $(CFLAGS) $(INCLUDE) -Llibft -lft -o $@ -c $< -m32
 
 libft_all:
 	make -C libft
 
 $(NAME): libft_all $(OBJ)
-	gcc $(OBJ) -Llibft -lft  -o $@
+	gcc $(OBJ) -Llibft -lft  -o $@ -m32
 
 clean :
 	make -C libft clean

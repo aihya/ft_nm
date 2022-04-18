@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   elf64_secs.c                                       :+:      :+:    :+:   */
+/*   elf32_secs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 18:00:11 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:57:31 by aihya            ###   ########.fr       */
+/*   Created: 2022/04/18 18:02:56 by aihya             #+#    #+#             */
+/*   Updated: 2022/04/18 18:57:27 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-static int  unwanted_section(Elf64_Shdr *sec)
+static int  unwanted_section(Elf32_Shdr *sec)
 {
     if (sec->sh_type == SHT_NULL || sec->sh_type == SHT_SYMTAB)
         return (1);
@@ -21,7 +21,7 @@ static int  unwanted_section(Elf64_Shdr *sec)
     return (0);
 }
 
-t_node  *elf64_secs(t_elf64 *elf, size_t *size)
+t_node  *elf32_secs(t_elf32 *elf, size_t *size)
 {
     t_node  *head;
     t_node  *curr;

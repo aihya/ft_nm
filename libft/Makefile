@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/18 15:51:39 by aihya            ###   ########.fr        #
+#    Updated: 2022/04/18 18:43:49 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -108,7 +108,7 @@ all : $(NAME)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c $(HEADER)
 	@mkdir -p $(OBJ_PATH)
-	gcc $(CFLAGS) -Iinclude -o $@ -c $<
+	gcc -m32 $(CFLAGS) -Iinclude -o $@ -c $<
 
 $(NAME) : $(OBJ)
 	ar rc $@ $^

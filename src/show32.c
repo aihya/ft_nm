@@ -1,45 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show64.c                                           :+:      :+:    :+:   */
+/*   show32.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 17:59:38 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/18 18:59:01 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-static void	print64_addr(t_node *node)
+static void	print32_addr(t_node *node)
 {
 	if (node->type == ELF_SEC)
 	{
-		if (((Elf64_Shdr *)node->object)->sh_type == SHN_UNDEF)
-			ft_putstr("                ");
+		if (((Elf32_Shdr *)node->object)->sh_type == SHN_UNDEF)
+			ft_putstr("        ");
 		else
-			ft_putnbr_base(((Elf64_Shdr *)node->object)->sh_addr, 16, 16);
+			ft_putnbr_base(((Elf32_Shdr *)node->object)->sh_addr, 16, 8);
 	}
 	else
 	{
-		if (((Elf64_Sym *)node->object)->st_shndx == SHN_UNDEF)
-			ft_putstr("                ");
+		if (((Elf32_Sym *)node->object)->st_shndx == SHN_UNDEF)
+			ft_putstr("        ");
 		else
-			ft_putnbr_base(((Elf64_Sym *)node->object)->st_value, 16, 16);
+			ft_putnbr_base(((Elf32_Sym *)node->object)->st_value, 16, 8);
 	}
 }
 
-static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
+static unsigned char	elf32_char(uint32_t t, uint32_t f, uint32_t i)
 {
 	if ((type_b(t)) && flag_b(f))
-		return (switch_global(ELF64_ST_BIND(i), 'b'));
+		return (switch_global(ELF32_ST_BIND(i), 'b'));
 	if ((type_d(t)) && flag_d(f))
-		return (switch_global(ELF64_ST_BIND(i), 'd'));
+		return (switch_global(ELF32_ST_BIND(i), 'd'));
 	if ((type_t(t)) && flag_t(f))
-		return (switch_global(ELF64_ST_BIND(i), 't'));
+		return (switch_global(ELF32_ST_BIND(i), 't'));
 	if ((type_r(t)) && flag_r(f))
-		return (switch_global(ELF64_ST_BIND(i), 'r'));
+		return (switch_global(ELF32_ST_BIND(i), 'r'));
 	if ((type_n(t)))
 		return ('n');
 	if (t == SHT_RELA || t == SHT_REL)
@@ -47,19 +47,19 @@ static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
 	return (' ');
 }
 
-static unsigned char	elf64_sec_char(Elf64_Shdr *sec)
+static unsigned char	elf32_sec_char(Elf32_Shdr *sec)
 {
-	return (elf64_char(sec->sh_type, sec->sh_flags, sec->sh_info));
+	return (elf32_char(sec->sh_type, sec->sh_flags, sec->sh_info));
 }
 
-static unsigned char	elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
+static unsigned char	elf32_sym_char(t_elf32 *elf, Elf32_Sym *sym)
 {
-	uint64_t	type;
-	uint64_t	flag;
+	uint32_t	type;
+	uint32_t	flag;
 
-	if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+	if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
 	{
-		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT)
+		if (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT)
 		{
 			if (sym->st_shndx == SHN_UNDEF)
 				return ('v');
@@ -72,22 +72,22 @@ static unsigned char	elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
 	if (sym->st_shndx == SHN_UNDEF)
 		return ('U');
 	else if (sym->st_shndx == SHN_COMMON)
-		return (switch_global(ELF64_ST_BIND(sym->st_info), 'c'));
+		return (switch_global(ELF32_ST_BIND(sym->st_info), 'c'));
 	else if (sym->st_shndx == SHN_ABS)
-		return (switch_global(ELF64_ST_BIND(sym->st_info), 'a'));
+		return (switch_global(ELF32_ST_BIND(sym->st_info), 'a'));
 	type = elf->shdr[sym->st_shndx].sh_type;
 	flag = elf->shdr[sym->st_shndx].sh_flags;
-	return (elf64_char(type, flag, sym->st_info));
+	return (elf32_char(type, flag, sym->st_info));
 }
 
-void	print64(t_elf64 *elf, t_node *node)
+void	print32(t_elf32 *elf, t_node *node)
 {
-	print64_addr(node);
+	print32_addr(node);
 	ft_putchar(' ');
 	if (node->type == ELF_SEC)
-		ft_putchar(elf64_sec_char((Elf64_Shdr *)node->object));
+		ft_putchar(elf32_sec_char((Elf32_Shdr *)node->object));
 	else
-		ft_putchar(elf64_sym_char(elf, (Elf64_Sym *)node->object));
+		ft_putchar(elf32_sym_char(elf, (Elf32_Sym *)node->object));
 	ft_putchar(' ');
 	ft_putendl(node->name);
 }

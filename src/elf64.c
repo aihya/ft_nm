@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:07 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 16:29:17 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/18 18:58:37 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void        elf64(void *ptr)
     if (elf)
     {
         syms = elf64_syms(elf, &size);
-        secs = elf64_secs(ptr, elf, &size);
+        secs = elf64_secs(elf, &size);
         syms = concatenate(syms, secs);
         sort(syms);
         node = syms;

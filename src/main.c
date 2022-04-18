@@ -1,21 +1,25 @@
 #include "ft_nm.h"
 
-int		pr_error(char *msg) // Contains printf
+static int	pr_error(char *msg) // Contains printf
 {
-	printf("%s\n", msg);
+	ft_putendl(msg);
 	return (EXIT_FAILURE);
 }
 
-int		ft_nm(void *ptr)
+static void	ft_nm(void *ptr)
 {
 	Elf64_Ehdr	*header;
 
 	header = (Elf64_Ehdr *)ptr;
-	if (header->e_type != ET_EXEC && header->e_type != ET_DYN)
-		return (ET_NONE);
+	if (header->e_type != ET_REL && header->e_type != ET_DYN)
+		return ;
 	if (header->e_machine != EM_386 && header->e_machine != EM_X86_64)
-		return (ET_NONE);
-	return (header->e_type);
+		return ;
+	if (header->e_machine == ELF_32)
+		elf32(ptr);
+	else if (header->e_machine == ELF_64)
+		elf64(ptr);
+	
 }
 
 int main(int argc, char **argv)
@@ -41,7 +45,6 @@ int main(int argc, char **argv)
 		return pr_error("mmap failed.\n");
 
 	ft_nm(ptr);
-	elf64(ptr);
 
 	if (munmap(ptr, st.st_size) < 0)
 		return pr_error("munmap failed.\n");
