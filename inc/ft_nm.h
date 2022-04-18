@@ -53,13 +53,13 @@ typedef struct  s_node
 
 // Utils
 void			alloc_node(t_node **head, t_node **curr);
-void			sort(t_node *nodes);
+void			sort(t_node *nodes); 
 
 // ELF 64
 void			elf64(void *ptr);
 t_elf64			*elf64_init(void *ptr);
 Elf64_Shdr		*elf64_shdr(void *ptr, char *target, t_elf64 *elf);
-t_node			*elf64_syms(void *ptr, t_elf64 *elf, size_t *size);
+t_node			*elf64_syms(t_elf64 *elf, size_t *size);
 t_node			*elf64_secs(void *ptr, t_elf64 *elf, size_t *size);
 void			print64(t_elf64 *elf, t_node *node);
 

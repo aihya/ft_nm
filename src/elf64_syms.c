@@ -1,10 +1,10 @@
 #include "ft_nm.h"
 
-t_node  *elf64_syms(void *ptr, t_elf64 *elf, size_t *size)
+t_node  *elf64_syms(t_elf64 *elf, size_t *size)
 {
-    t_node  *head;
-    t_node  *curr;
-    int     i;
+    t_node      *head;
+    t_node      *curr;
+    uint64_t    i;
 
     head = NULL;
     curr = NULL;

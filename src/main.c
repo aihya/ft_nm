@@ -6,7 +6,7 @@ int		pr_error(char *msg) // Contains printf
 	return (EXIT_FAILURE);
 }
 
-int		ft_nm(void *ptr, struct stat *st)
+int		ft_nm(void *ptr)
 {
 	Elf64_Ehdr	*header;
 
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	if (ptr == MAP_FAILED)
 		return pr_error("mmap failed.\n");
 
-	ft_nm(ptr, &st);
+	ft_nm(ptr);
 	elf64(ptr);
 
 	if (munmap(ptr, st.st_size) < 0)

@@ -63,13 +63,12 @@ void        elf64(void *ptr)
     t_node  *secs;
     t_node  *node;
     size_t  size;
-    int     idx;
 
     size = 0;
     elf = elf64_init(ptr);
     if (elf)
     {
-        syms = elf64_syms(ptr, elf, &size);
+        syms = elf64_syms(elf, &size);
         secs = elf64_secs(ptr, elf, &size);
         syms = concatenate(syms, secs);
         sort(syms);
