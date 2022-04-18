@@ -18,6 +18,8 @@
 # define ERR_NO_SYMS 0
 # define ERR_FILE_NOT_FOUND 1
 
+# define SWITCH_GLOBAL(i, c) (c - 32 * (i == STB_GLOBAL))
+
 typedef enum {GLOBAL, LOCAL, WEAK, UNIQUE} e_bind;
 typedef enum {NOTYPE, FILE_, OBJECT, FUNC, SECTION} e_type;
 
@@ -59,7 +61,7 @@ t_elf64			*elf64_init(void *ptr);
 Elf64_Shdr		*elf64_shdr(void *ptr, char *target, t_elf64 *elf);
 t_node			*elf64_syms(void *ptr, t_elf64 *elf, size_t *size);
 t_node			*elf64_secs(void *ptr, t_elf64 *elf, size_t *size);
-void			elf64_show(t_elf64 *elf, t_node *node);
+void			print64(t_elf64 *elf, t_node *node);
 
 // ELF 32
 

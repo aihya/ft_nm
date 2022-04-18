@@ -78,7 +78,7 @@ void        elf64(void *ptr)
         {
             // ft_putendl(node->name);
             if (node->object)
-                elf64_show(elf, node);
+                print64(elf, node);
             node = node->next;
         }
     }
