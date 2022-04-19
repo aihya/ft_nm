@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:57:49 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/18 22:21:55 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,16 @@
 
 # define ELF_32	EM_386
 # define ELF_64	EM_X86_64
+# define ERROR -1
 # define ELF_SYM 1
 # define ELF_SEC 2
 # define ERR_NO_SYMS 0
 # define ERR_FILE_NOT_FOUND 1
+# define OP_A 1 << 1
+# define OP_G 1 << 2
+# define OP_U 1 << 3
+# define OP_R 1 << 4
+# define OP_P 1 << 5
 
 typedef struct s_elf64
 {
@@ -58,9 +64,9 @@ typedef struct s_node
 	struct s_node	*next;
 }	t_node;
 
+int				parse_args(int argc, char **argv);
 void			alloc_node(t_node **head, t_node **curr);
 void			sort(t_node *nodes);
-unsigned char	switch_global(uint64_t info, char c);
 unsigned int	flag_b(uint64_t flag);
 unsigned int	flag_d(uint64_t flag);
 unsigned int	flag_t(uint64_t flag);
@@ -70,15 +76,16 @@ unsigned int	type_r(uint64_t type);
 unsigned int	type_b(uint64_t type);
 unsigned int	type_t(uint64_t type);
 unsigned int	type_n(uint64_t type);
+unsigned char	switch_global(uint64_t info, char c);
 
-void			elf64(void *ptr);
+void			elf64(void *ptr, int ops);
 t_elf64			*elf64_init(void *ptr);
 Elf64_Shdr		*elf64_shdr(void *ptr, char *target, t_elf64 *elf);
 t_node			*elf64_syms(t_elf64 *elf, size_t *size);
 t_node			*elf64_secs(t_elf64 *elf, size_t *size);
 void			print64(t_elf64 *elf, t_node *node);
 
-void			elf32(void *ptr);
+void			elf32(void *ptr, int ops);
 t_elf32			*elf32_init(void *ptr);
 Elf32_Shdr		*elf32_shdr(void *ptr, char *target, t_elf32 *elf);
 t_node			*elf32_syms(t_elf32 *elf, size_t *size);

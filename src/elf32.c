@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 18:00:52 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:58:31 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/18 22:23:17 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static t_node   *concatenate(t_node *syms, t_node *secs)
     return (syms);
 }
 
-void        elf32(void *ptr)
+void        elf32(void *ptr, int ops)
 {
     t_elf32 *elf;
     t_node  *syms;
@@ -83,13 +83,14 @@ void        elf32(void *ptr)
         syms = elf32_syms(elf, &size);
         secs = elf32_secs(elf, &size);
         syms = concatenate(syms, secs);
-        sort(syms);
+        if (ops & OP_P)
+            sort(syms);
         node = syms;
         while (node)
         {
             // ft_putendl(node->name);
             if (node->object)
-                print32(elf, node);
+                print32(elf, node, ops);
             node = node->next;
         }
     }

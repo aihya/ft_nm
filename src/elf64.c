@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:07 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:58:37 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/18 22:22:39 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static t_node   *concatenate(t_node *syms, t_node *secs)
     return (syms);
 }
 
-void        elf64(void *ptr)
+void        elf64(void *ptr, int ops)
 {
     t_elf64 *elf;
     t_node  *syms;
@@ -87,9 +87,8 @@ void        elf64(void *ptr)
         node = syms;
         while (node)
         {
-            // ft_putendl(node->name);
             if (node->object)
-                print64(elf, node);
+                print64(elf, node, ops);
             node = node->next;
         }
     }
