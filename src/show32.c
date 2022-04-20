@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:59:01 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/20 13:48:59 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,15 @@ static void	print32_addr(t_node *node)
 
 static unsigned char	elf32_char(uint32_t t, uint32_t f, uint32_t i)
 {
-	if ((type_b(t)) && flag_b(f))
+	if (type_b(t) && flag_b(f))
 		return (switch_global(ELF32_ST_BIND(i), 'b'));
-	if ((type_d(t)) && flag_d(f))
+	if (type_d(t) && flag_d(f))
 		return (switch_global(ELF32_ST_BIND(i), 'd'));
-	if ((type_t(t)) && flag_t(f))
+	if (type_t(t) && flag_t(f))
 		return (switch_global(ELF32_ST_BIND(i), 't'));
-	if ((type_r(t)) && flag_r(f))
+	if (type_r(t) && flag_r(f))
 		return (switch_global(ELF32_ST_BIND(i), 'r'));
-	if ((type_n(t)))
+	if (type_n(t))
 		return ('n');
 	if (t == SHT_RELA || t == SHT_REL)
 		return ('r');
@@ -80,14 +80,60 @@ static unsigned char	elf32_sym_char(t_elf32 *elf, Elf32_Sym *sym)
 	return (elf32_char(type, flag, sym->st_info));
 }
 
-void	print32(t_elf32 *elf, t_node *node)
+static void	print32_node(t_elf32 *elf, t_node *node, int ops)
 {
-	print32_addr(node);
-	ft_putchar(' ');
-	if (node->type == ELF_SEC)
+	Elf32_Sym	*sym;
+
+	if (node->type == ELF_SEC && (ops & OP_A))
+	{
+		print32_addr(node);
+		ft_putchar(' ');
 		ft_putchar(elf32_sec_char((Elf32_Shdr *)node->object));
+		ft_putchar(' ');
+		ft_putendl(node->name);
+	}
+	else if (node->type == ELF_SYM)
+	{
+		sym = (Elf32_Sym *)node->object;
+		if (((ops & OP_U)
+		&&	sym->st_shndx == SHN_UNDEF)
+		||	((ops & OP_G)
+		&&	(ELF32_ST_BIND(sym->st_info) == STB_GLOBAL 
+		||	 ELF32_ST_BIND(sym->st_info) == STB_WEAK))
+		||	((ops & OP_A))
+		||	((ops & DFLT) && ELF32_ST_TYPE(sym->st_info) != STT_FILE))
+		{
+			print32_addr(node);
+			ft_putchar(' ');
+			ft_putchar(elf32_sym_char(elf, sym));
+			ft_putchar(' ');
+			ft_putendl(node->name);
+		} 
+	}
+}
+
+void	print32(t_elf32 *elf, t_node *head, t_node *tail, int ops)
+{
+	t_node	*node;
+		
+	if (!(ops & OP_P))
+		sort(head);
+	if (ops & OP_R && !(ops & OP_P))
+	{
+		node = tail;
+		while (node)
+		{
+			print32_node(elf, node, ops);
+			node = node->prev;
+		}
+	}
 	else
-		ft_putchar(elf32_sym_char(elf, (Elf32_Sym *)node->object));
-	ft_putchar(' ');
-	ft_putendl(node->name);
+	{
+		node = head;
+		while (node)
+		{
+			print32_node(elf, node, ops);
+			node = node->next;
+		}
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 18:02:33 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:02:44 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/19 13:37:33 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@ t_node  *elf32_syms(t_elf32 *elf, size_t *size)
 {
     t_node      *head;
     t_node      *curr;
+    t_node      *prev;
     uint32_t    i;
 
     head = NULL;
     curr = NULL;
+    prev = NULL;
     i = 0;
     while (++i < elf->symt->sh_size / sizeof(Elf32_Sym))
     {
@@ -30,6 +32,8 @@ t_node  *elf32_syms(t_elf32 *elf, size_t *size)
             curr->name = elf->strt + elf->syms[i].st_name;
             curr->type = ELF_SYM;
             curr->next = NULL;
+            curr->prev = prev;
+            prev = curr;
             (*size)++;
         }
     }

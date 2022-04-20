@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/18 18:43:28 by aihya            ###   ########.fr        #
+#    Updated: 2022/04/20 22:05:19 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,8 @@ SRC_NAME =	elf.c \
 			types.c \
 			sort.c \
 			utils.c \
+			args.c \
+			file_check.c \
 			main.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)

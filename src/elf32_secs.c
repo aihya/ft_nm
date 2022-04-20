@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 18:02:56 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:57:27 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/19 13:37:44 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ t_node  *elf32_secs(t_elf32 *elf, size_t *size)
 {
     t_node  *head;
     t_node  *curr;
+    t_node  *prev;
     int     i;
 
     head = NULL;
     curr = NULL;
+    prev = NULL;
     i = -1;
     while (++i < elf->ehdr->e_shnum)
     {
@@ -39,6 +41,8 @@ t_node  *elf32_secs(t_elf32 *elf, size_t *size)
         curr->name = elf->shst + elf->shdr[i].sh_name;
         curr->type = ELF_SEC;
         curr->next = NULL;
+        curr->prev = prev;
+        prev = curr;
         (*size)++;
     }
     return (head);

@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:07 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 22:22:39 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/19 13:44:30 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static t_node   *concatenate(t_node *syms, t_node *secs)
     while (node && node->next)
         node = node->next;
     node->next = secs;
+    secs->prev = node;
     return (syms);
 }
 
@@ -73,7 +74,7 @@ void        elf64(void *ptr, int ops)
     t_elf64 *elf;
     t_node  *syms;
     t_node  *secs;
-    t_node  *node;
+    t_node  *tail;
     size_t  size;
 
     size = 0;
@@ -83,13 +84,13 @@ void        elf64(void *ptr, int ops)
         syms = elf64_syms(elf, &size);
         secs = elf64_secs(elf, &size);
         syms = concatenate(syms, secs);
-        sort(syms);
-        node = syms;
-        while (node)
+        tail = NULL;
+        if (ops & OP_R)
         {
-            if (node->object)
-                print64(elf, node, ops);
-            node = node->next;
+            tail = syms;
+            while (tail && tail->next)
+                tail = tail->next;
         }
+        print64(elf, concatenate(syms, secs), tail, ops);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 18:00:52 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 22:23:17 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/19 20:15:52 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static t_node   *concatenate(t_node *syms, t_node *secs)
     while (node && node->next)
         node = node->next;
     node->next = secs;
+    secs->prev = node;
     return (syms);
 }
 
@@ -73,7 +74,7 @@ void        elf32(void *ptr, int ops)
     t_elf32 *elf;
     t_node  *syms;
     t_node  *secs;
-    t_node  *node;
+    t_node  *tail;
     size_t  size;
 
     size = 0;
@@ -83,15 +84,13 @@ void        elf32(void *ptr, int ops)
         syms = elf32_syms(elf, &size);
         secs = elf32_secs(elf, &size);
         syms = concatenate(syms, secs);
-        if (ops & OP_P)
-            sort(syms);
-        node = syms;
-        while (node)
+        tail = NULL;
+        if (ops & OP_R)
         {
-            // ft_putendl(node->name);
-            if (node->object)
-                print32(elf, node, ops);
-            node = node->next;
+            tail = syms;
+            while (tail && tail->next)
+                tail = tail->next;
         }
+        print32(elf, syms, tail, ops);
     }
 }

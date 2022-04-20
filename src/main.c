@@ -1,11 +1,5 @@
 #include "ft_nm.h"
 
-static int	pr_error(char *msg) // Contains printf
-{
-	ft_putendl(msg);
-	return (ERROR);
-}
-
 static void	ft_nm(void *ptr, int ops)
 {
 	Elf64_Ehdr	*header;
@@ -19,7 +13,6 @@ static void	ft_nm(void *ptr, int ops)
 		elf32(ptr, ops);
 	else if (header->e_machine == ELF_64)
 		elf64(ptr, ops);
-	
 }
 
 int	num_files(int argc, char **argv)
@@ -39,23 +32,25 @@ int	num_files(int argc, char **argv)
 
 int	ft_nm_file(char *name, int ops)
 {
-	struct stat	st;
 	int			fd;
-	int			ret;
 	void		*ptr;
+	struct stat	st;
 
-	fd = open(name, O_RDONLY);
-	if (fd < 0)
-		return pr_error("ft_nm: open failed.\n");
-	ret = fstat(fd, &st);
-	if (ret < 0)
-		return pr_error("ft_nm: fstat failed.\n");
+	fd = open_file(name, &st);
+	if (fd == ERROR)
+		return (EXIT_FAILURE);
 	ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
-		return pr_error("ft_nm: mmap failed.\n");
+	{
+		error("mmap", "Failed to map file to memory");
+		return (EXIT_FAILURE);
+	}
 	ft_nm(ptr, ops);
 	if (munmap(ptr, st.st_size) < 0)
-		return pr_error("ft_nm: munmap failed.\n");
+	{
+		error("munmap", "Failed to unmap file from memory");
+		return (EXIT_FAILURE);
+	}
 	return (1);
 }
 
@@ -68,7 +63,7 @@ int	ft_nm_files(int argc, char **argv, int ops)
 	i = 0;
 	while (++i < argc)
 	{
-		if (argv[i][0] != '-')
+		if (argv[i][0] == '-')
 			continue ;
 		if (ft_nm_file(argv[i], ops) == ERROR)
 			ret |= EXIT_FAILURE;
@@ -79,11 +74,13 @@ int	ft_nm_files(int argc, char **argv, int ops)
 int main(int argc, char **argv)
 {
 	int	ops;
+	int	names;
 
-	ops = parse_args(argc, argv);
+	ops = DFLT;
+	names = parse_args(argc, argv, &ops);
 	if (ops == ERROR)
 		return (EXIT_FAILURE);
-	if (nm_args(argc, argv, ops) == 0)
+	if (names == 0)
 		return (ft_nm_file("./a.out", ops));
 	return (ft_nm_files(argc, argv, ops));
 }

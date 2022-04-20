@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 21:04:06 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 22:04:11 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/20 01:05:08 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,60 +16,68 @@ static int	invalid_option(char op)
 {
 	ft_putstr("nm: invalid option -- ");
 	ft_putchar('\'');
-	ft_putchar(arg);
+	ft_putchar(op);
 	ft_putendl("'");
+	return (ERROR);
 }
 
-static int	set_options(char *arg, int *ops)
+static int	adjust_options(int ops)
 {
-	int	i;
+	if (ops & OP_U)
+		ops &= ~(OP_G | OP_A | DFLT);
+	else if (ops & OP_G)
+		ops &= ~(OP_A | DFLT);
+	else if (ops & OP_A)
+		ops &= ~(DFLT);
+	if (ops & OP_P)
+		ops &= ~(OP_R);
+	return (ops);
+}
 
+static int	parse_arg(char *arg, int old_ops)
+{
+	int		ops;
+	size_t	i;
+
+	ops = old_ops;
 	i = 0;
-	while (++i && ft_strchr("agurp", arg[i]))
+	while (++i < ft_strlen(arg) && ft_strchr("agurp", arg[i]))
 	{
 		if (arg[i] == 'a')
-			*ops |= OP_A;
+			ops |= OP_A;
 		else if (arg[i] == 'g')
-			*ops |= OP_G;
+			ops |= OP_G;
 		else if (arg[i] == 'u')
-			*ops |= OP_U;
+			ops |= OP_U;
 		else if (arg[i] == 'r')
-			*ops |= OP_R;
+			ops |= OP_R;
 		else
-			*ops |= OP_P;
+			ops |= OP_P;
 	}
-	return (i);
+	if (i == ft_strlen(arg))
+		return (adjust_options(ops));
+	return (invalid_option(arg[i]));
 }
 
-static int	parse_arg(char *arg)
+int	parse_args(int argc, char **argv, int *ops)
 {
+	int	names;
 	int	i;
-	int	ops;
-
-	ops = 0;
-	i = set_options(arg, &ops);
-	if (i != ft_strlen(arg + 1))
-		return (invalid_option(arg[i]));
-	return (ops);
-}
-
-int	parse_args(int argc, char **argv)
-{
-	int	i;
-	int	j;
-	int	ops;
 	int o;
 
-	if (argc == 1)
-		return (pr_error("ft_nm need a file name.\n"));
-	ops = 0;
 	i = 0;
+	names = 0;
 	while (++i < argc)
 	{
-		o = parse_arg(argv[i]);
-		if (argv[i][0] == '-' && o == ERROR)
-			return (ERROR);
-		ops |= o;
+		if (argv[i][0] != '-' || (argv[i][0] == '-' && ft_strlen(argv[i]) == 1))
+			names++;
+		else if (argv[i][0] == '-')
+		{
+			o = parse_arg(argv[i], *ops);
+			if (o == ERROR)
+				return (ERROR);
+			*ops = o;
+		}
 	}
-	return (ops);
+	return (names);
 }

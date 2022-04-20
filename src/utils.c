@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 17:51:53 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 18:09:00 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/20 17:18:14 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,20 @@ void	alloc_node(t_node **head, t_node **curr)
 unsigned char	switch_global(uint64_t info, char c)
 {
 	return (c - 32 * (info == STB_GLOBAL));
+}
+
+int	error(char *name, char *msg)
+{
+    ft_putstr("ft_nm: ");
+    if (name)
+    {
+        ft_putstr(name);
+        ft_putstr(": ");
+    }
+    if (msg)
+    {
+        ft_putstr(msg);
+        ft_putstr(": ");
+    }
+    return (ERROR);
 }

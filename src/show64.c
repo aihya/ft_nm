@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/18 17:59:38 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/19 13:46:27 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,10 @@ static unsigned char	elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
 	return (elf64_char(type, flag, sym->st_info));
 }
 
-void	print64(t_elf64 *elf, t_node *node)
+static void	print64_node(t_elf64 *elf, t_node *node, int ops)
 {
+	// if (ops & OP_A)
+	(void)ops;
 	print64_addr(node);
 	ft_putchar(' ');
 	if (node->type == ELF_SEC)
@@ -90,4 +92,30 @@ void	print64(t_elf64 *elf, t_node *node)
 		ft_putchar(elf64_sym_char(elf, (Elf64_Sym *)node->object));
 	ft_putchar(' ');
 	ft_putendl(node->name);
+}
+
+void	print64(t_elf64 *elf, t_node *head, t_node *tail, int ops)
+{
+	t_node	*node;
+
+	if (!(ops & OP_P))
+		sort(head);
+	if (ops & OP_R)
+	{
+		node = tail;
+		while (node && node->prev)
+		{
+			print64_node(elf, node, ops);
+			node = node->prev;
+		}
+	}
+	else
+	{
+		node = head;
+		while (node && node->next)
+		{
+			print64_node(elf, node, ops);
+			node = node->next;
+		}
+	}
 }
