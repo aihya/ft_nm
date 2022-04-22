@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:07 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/19 13:44:30 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/22 20:32:59 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,44 +53,18 @@ Elf64_Shdr  *elf64_shdr(void *ptr, char *target, t_elf64 *elf)
     return (NULL);
 }
 
-static t_node   *concatenate(t_node *syms, t_node *secs)
-{
-    t_node  *node;
-
-    if (syms == NULL)
-        return (secs);
-    if (secs == NULL)
-        return (syms);
-    node = syms;
-    while (node && node->next)
-        node = node->next;
-    node->next = secs;
-    secs->prev = node;
-    return (syms);
-}
-
 void        elf64(void *ptr, int ops)
 {
     t_elf64 *elf;
-    t_node  *syms;
-    t_node  *secs;
-    t_node  *tail;
-    size_t  size;
+    t_node  **hashtable;
 
-    size = 0;
     elf = elf64_init(ptr);
+    hashtable = ht_init();
     if (elf)
     {
-        syms = elf64_syms(elf, &size);
-        secs = elf64_secs(elf, &size);
-        syms = concatenate(syms, secs);
-        tail = NULL;
-        if (ops & OP_R)
-        {
-            tail = syms;
-            while (tail && tail->next)
-                tail = tail->next;
-        }
-        print64(elf, concatenate(syms, secs), tail, ops);
+        elf64_syms(elf, hashtable, ops);
+        elf64_secs(elf, hashtable, ops);
+        // print64(elf, hashtable, ops);
+        print(hashtable);
     }
 }

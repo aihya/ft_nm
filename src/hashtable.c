@@ -1,0 +1,156 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hashtable.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/21 22:39:25 by aihya             #+#    #+#             */
+/*   Updated: 2022/04/22 20:29:53 by aihya            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_nm.h"
+
+t_node	**ht_init()
+{
+	t_node	**hashtable;
+
+	hashtable = (t_node **)malloc(sizeof(t_node *) * HT_SIZE);
+	ft_bzero(hashtable, sizeof(t_node *) * HT_SIZE);
+	return (hashtable);
+}
+
+void	add_before(t_node **head, t_node *curr, t_node *node)
+{
+	node->next = curr;
+	node->prev = curr->prev;
+	if (curr == *head)
+	{
+		(*head)->prev = node;
+		(*head) = node;
+	}
+	else
+	{
+		curr->prev->next = node;
+		curr->prev = node;
+	}
+}
+
+void	add_after(t_node *curr, t_node *node)
+{
+	node->prev = curr;
+	node->next = curr->next;
+	if (curr->next)
+		curr->next->prev = node;
+	curr->next = node;
+}
+
+void	ht_add_node(t_node **hashtable, t_node *node, int arch, int ops)
+{
+	t_node	*curr;
+	t_node	**head;
+
+	head = &hashtable[0];
+	if (!(ops & OP_P))
+		head = &hashtable[(int)node->name[0]];
+	if (*head == NULL)
+		*head = node;
+	else
+	{
+		(void)arch;
+		curr = *head;
+		if (ops & OP_P)
+		{
+			while (curr && curr->next)
+				curr = curr->next;
+			curr->next = node;
+			node->prev = curr;
+		}
+		else if (ft_strcmp(node->name, curr->name) < 0)
+			add_before(head, curr, node);
+		else
+		{
+			while (curr && curr->next && ft_strcmp(node->name, curr->name) >= 0)
+				curr = curr->next;
+			add_after(curr, node);
+		}
+	}
+}
+
+void	print(t_node **hashtable)
+{
+	int		i;
+	t_node	*node;
+
+	i = -1;
+	while (++i < HT_SIZE)
+	{
+		node = hashtable[i];
+		if (node)
+			printf("%d\n", i);
+		while (node)
+		{
+			printf("\t%s\n", node->name);
+			node = node->next;
+		}
+	}
+}
+
+t_node	*forward_list(t_node **hashtable)
+{
+	t_node	*head;
+	t_node	*curr;
+	t_node	*node;
+	int		i;
+
+	head = NULL;
+	curr = NULL;
+	i = -1;
+	while (++i < HT_SIZE)
+	{
+		node = hashtable[i];
+		while (node)
+		{
+			if (head == NULL)
+				head = node;
+			else
+				curr->next = node;
+			curr = node;
+			node = node->next;
+		}
+	}
+	return (head);
+}
+
+t_node	*reverse_list(t_node **hashtable)
+{
+	t_node	*head;
+	t_node	*curr;
+	t_node	*node;
+	t_node	*prev;
+	int		i;
+
+	head = NULL;
+	curr = NULL;
+	i = HT_SIZE;
+	while (--i >= 0)
+	{
+		if (hashtable[i] && head == NULL)
+		{
+			head = hashtable[i];
+			curr = head;
+		}
+		node = hashtable[i];
+		while (node && node->next)
+			node = node->next;
+		while (node)
+		{
+			curr->next = node;
+			prev = node->prev;
+			node->prev = curr;
+			node = prev;
+		}
+	}
+	return (head);
+}

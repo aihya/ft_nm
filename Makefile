@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/20 22:05:19 by aihya            ###   ########.fr        #
+#    Updated: 2022/04/22 14:45:04 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC_NAME =	elf.c \
 			utils.c \
 			args.c \
 			file_check.c \
+			hashtable.c \
 			main.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)
@@ -52,13 +53,13 @@ all : $(NAME)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c $(HEADER)
 	@mkdir -p $(OBJ_PATH) 
-	gcc $(CFLAGS) $(INCLUDE) -Llibft -lft -o $@ -c $< -m32
+	gcc $(CFLAGS) $(INCLUDE) -Llibft -lft -o $@ -c $<
 
 libft_all:
 	make -C libft
 
 $(NAME): libft_all $(OBJ)
-	gcc $(OBJ) -Llibft -lft  -o $@ -m32
+	gcc $(OBJ) -Llibft -lft  -o $@
 
 clean :
 	make -C libft clean

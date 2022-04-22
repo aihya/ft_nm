@@ -51,6 +51,11 @@ int	ft_nm_file(char *name, int ops)
 		error("munmap", "Failed to unmap file from memory");
 		return (EXIT_FAILURE);
 	}
+	if (close(fd) == -1)
+	{
+		error("close", "Failed to close file descriptor");
+		return (EXIT_FAILURE);
+	}
 	return (1);
 }
 

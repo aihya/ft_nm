@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/19 13:46:27 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/22 16:27:11 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,23 +32,25 @@ static void	print64_addr(t_node *node)
 
 static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
 {
-	if ((type_b(t)) && flag_b(f))
+	if (type_b(t) && flag_b(f))
 		return (switch_global(ELF64_ST_BIND(i), 'b'));
-	if ((type_d(t)) && flag_d(f))
+	else if (type_d(t) && flag_d(f))
 		return (switch_global(ELF64_ST_BIND(i), 'd'));
-	if ((type_t(t)) && flag_t(f))
+	else if (type_t(t) && flag_t(f))
 		return (switch_global(ELF64_ST_BIND(i), 't'));
-	if ((type_r(t)) && flag_r(f))
+	else if (type_r(t) && flag_r(f))
 		return (switch_global(ELF64_ST_BIND(i), 'r'));
-	if ((type_n(t)))
+	else if (type_n(t))
 		return ('n');
-	if (t == SHT_RELA || t == SHT_REL)
+	else if (t == SHT_RELA || t == SHT_REL)
 		return ('r');
-	return (' ');
+	return ('?');
 }
 
-static unsigned char	elf64_sec_char(Elf64_Shdr *sec)
+static unsigned char	elf64_sec_char(Elf64_Shdr *sec, char *name)
 {
+	if (ft_strncmp(name, ".debug", 6) == 0)
+		return ('N');
 	return (elf64_char(sec->sh_type, sec->sh_flags, sec->sh_info));
 }
 
@@ -82,40 +84,48 @@ static unsigned char	elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
 
 static void	print64_node(t_elf64 *elf, t_node *node, int ops)
 {
-	// if (ops & OP_A)
-	(void)ops;
-	print64_addr(node);
-	ft_putchar(' ');
-	if (node->type == ELF_SEC)
-		ft_putchar(elf64_sec_char((Elf64_Shdr *)node->object));
-	else
-		ft_putchar(elf64_sym_char(elf, (Elf64_Sym *)node->object));
-	ft_putchar(' ');
-	ft_putendl(node->name);
+	Elf64_Sym	*sym;
+
+	if (node->type == ELF_SEC && (ops & OP_A))
+	{
+		print64_addr(node);
+		ft_putchar(' ');
+		ft_putchar(elf64_sec_char((Elf64_Shdr *)node->object, node->name));
+		ft_putchar(' ');
+		ft_putendl(node->name);
+	}
+	else if (node->type == ELF_SYM)
+	{
+		sym = (Elf64_Sym *)node->object;
+		if (((ops & OP_U)
+		&&	sym->st_shndx == SHN_UNDEF)
+		||	((ops & OP_G)
+		&&	(ELF64_ST_BIND(sym->st_info) == STB_GLOBAL 
+		||	 ELF64_ST_BIND(sym->st_info) == STB_WEAK))
+		||	((ops & OP_A))
+		||	((ops & DFLT) && ELF64_ST_TYPE(sym->st_info) != STT_FILE))
+		{
+			print64_addr(node);
+			ft_putchar(' ');
+			ft_putchar(elf64_sym_char(elf, sym));
+			ft_putchar(' ');
+			ft_putendl(node->name);
+		} 
+	}
 }
 
-void	print64(t_elf64 *elf, t_node *head, t_node *tail, int ops)
+void	print64(t_elf64 *elf, t_node **hashtable, int ops)
 {
 	t_node	*node;
 
-	if (!(ops & OP_P))
-		sort(head);
-	if (ops & OP_R)
+	node = NULL;
+	if ((ops & OP_R) && !(ops & OP_P))
+		node = reverse_list(hashtable);
+	if (node == NULL)
+		node = forward_list(hashtable);
+	while (node)
 	{
-		node = tail;
-		while (node && node->prev)
-		{
-			print64_node(elf, node, ops);
-			node = node->prev;
-		}
-	}
-	else
-	{
-		node = head;
-		while (node && node->next)
-		{
-			print64_node(elf, node, ops);
-			node = node->next;
-		}
+		print64_node(elf, node, ops);
+		node = node->next;
 	}
 }

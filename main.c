@@ -1,7 +1,8 @@
-#include <stdio.h>
+#define N32
+#include "h.h"
 
 int main()
 {
-	printf("%d\n", 42 - (2 * (2 == 2)));
+	elfN();
 	return (0);
 }

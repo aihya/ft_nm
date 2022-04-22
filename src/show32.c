@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/20 13:48:59 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/21 20:44:11 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,23 @@ static unsigned char	elf32_char(uint32_t t, uint32_t f, uint32_t i)
 {
 	if (type_b(t) && flag_b(f))
 		return (switch_global(ELF32_ST_BIND(i), 'b'));
-	if (type_d(t) && flag_d(f))
+	else if (type_d(t) && flag_d(f))
 		return (switch_global(ELF32_ST_BIND(i), 'd'));
-	if (type_t(t) && flag_t(f))
+	else if (type_t(t) && flag_t(f))
 		return (switch_global(ELF32_ST_BIND(i), 't'));
-	if (type_r(t) && flag_r(f))
+	else if (type_r(t) && flag_r(f))
 		return (switch_global(ELF32_ST_BIND(i), 'r'));
-	if (type_n(t))
+	else if (type_n(t))
 		return ('n');
-	if (t == SHT_RELA || t == SHT_REL)
+	else if (t == SHT_RELA || t == SHT_REL)
 		return ('r');
-	return (' ');
+	return ('?');
 }
 
-static unsigned char	elf32_sec_char(Elf32_Shdr *sec)
+static unsigned char	elf32_sec_char(Elf32_Shdr *sec, char *name)
 {
+	if (ft_strncmp(name, ".debug", 6) == 0)
+		return ('N');
 	return (elf32_char(sec->sh_type, sec->sh_flags, sec->sh_info));
 }
 
@@ -88,7 +90,7 @@ static void	print32_node(t_elf32 *elf, t_node *node, int ops)
 	{
 		print32_addr(node);
 		ft_putchar(' ');
-		ft_putchar(elf32_sec_char((Elf32_Shdr *)node->object));
+		ft_putchar(elf32_sec_char((Elf32_Shdr *)node->object, node->name));
 		ft_putchar(' ');
 		ft_putendl(node->name);
 	}
@@ -117,7 +119,7 @@ void	print32(t_elf32 *elf, t_node *head, t_node *tail, int ops)
 	t_node	*node;
 		
 	if (!(ops & OP_P))
-		sort(head);
+		sort(head, ELF_32);
 	if (ops & OP_R && !(ops & OP_P))
 	{
 		node = tail;

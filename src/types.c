@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:55:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/20 22:21:15 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/21 17:05:11 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 unsigned int	type_d(uint64_t type)
 {
 	return (type == SHT_INIT_ARRAY
-		|| SHT_PREINIT_ARRAY
+		|| type == SHT_PREINIT_ARRAY
 		|| type == SHT_DYNAMIC
 		|| type == SHT_FINI_ARRAY
 		|| type == SHT_PROGBITS);
