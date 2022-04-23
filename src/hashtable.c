@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 22:39:25 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/22 20:29:53 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/23 19:06:06 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,14 @@ void	ht_add_node(t_node **hashtable, t_node *node, int arch, int ops)
 				curr = curr->next;
 			curr->next = node;
 			node->prev = curr;
+			return ;
 		}
-		else if (ft_strcmp(node->name, curr->name) < 0)
+		while (curr && ft_strcmp(node->name, curr->name) > 0 && curr->next)
+			curr = curr->next;
+		if (curr->next || ft_strcmp(node->name, curr->name) < 0)
 			add_before(head, curr, node);
 		else
-		{
-			while (curr && curr->next && ft_strcmp(node->name, curr->name) >= 0)
-				curr = curr->next;
 			add_after(curr, node);
-		}
 	}
 }
 
@@ -131,25 +130,26 @@ t_node	*reverse_list(t_node **hashtable)
 	t_node	*prev;
 	int		i;
 
+	print(hashtable);
 	head = NULL;
 	curr = NULL;
 	i = HT_SIZE;
 	while (--i >= 0)
 	{
-		if (hashtable[i] && head == NULL)
-		{
-			head = hashtable[i];
-			curr = head;
-		}
 		node = hashtable[i];
 		while (node && node->next)
 			node = node->next;
+		if (head == NULL && node)
+		{
+			head = node;
+			curr = node;
+		}
 		while (node)
 		{
-			curr->next = node;
 			prev = node->prev;
-			node->prev = curr;
-			node = prev;
+			node->prev = node->next;
+			node->next = prev;
+			node = node->next;
 		}
 	}
 	return (head);

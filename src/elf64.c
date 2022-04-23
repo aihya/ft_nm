@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:07 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/22 20:32:59 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/23 18:18:14 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ Elf64_Shdr  *elf64_shdr(void *ptr, char *target, t_elf64 *elf)
         while (++idx < elf->ehdr->e_shnum)
         {
             name = elf->shst + elf->shdr[idx].sh_name;
-            if (!strcmp(name, target))
+            if (!ft_strcmp(name, target))
                 return (&elf->shdr[idx]);
         }
     }
@@ -64,7 +64,7 @@ void        elf64(void *ptr, int ops)
     {
         elf64_syms(elf, hashtable, ops);
         elf64_secs(elf, hashtable, ops);
-        // print64(elf, hashtable, ops);
-        print(hashtable);
+        print64(elf, hashtable, ops);
+        // print(hashtable);
     }
 }
