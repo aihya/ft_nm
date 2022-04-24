@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 22:39:25 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/23 19:06:06 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/23 20:45:22 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,14 +125,13 @@ t_node	*forward_list(t_node **hashtable)
 t_node	*reverse_list(t_node **hashtable)
 {
 	t_node	*head;
-	t_node	*curr;
 	t_node	*node;
 	t_node	*prev;
 	int		i;
 
 	print(hashtable);
 	head = NULL;
-	curr = NULL;
+	prev = NULL;
 	i = HT_SIZE;
 	while (--i >= 0)
 	{
@@ -140,15 +139,18 @@ t_node	*reverse_list(t_node **hashtable)
 		while (node && node->next)
 			node = node->next;
 		if (head == NULL && node)
-		{
 			head = node;
-			curr = node;
+		if (prev && node)
+		{
+			prev->next = node;
+			node->next = prev;
 		}
 		while (node)
 		{
 			prev = node->prev;
 			node->prev = node->next;
 			node->next = prev;
+			prev = node;
 			node = node->next;
 		}
 	}

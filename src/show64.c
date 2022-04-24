@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/22 16:27:11 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/24 18:49:38 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,17 @@ static void	print64_addr(t_node *node)
 
 static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
 {
-	if (type_b(t) && flag_b(f))
+	ft_putnbr_base(SHT_NOBITS, 2, 8);
+	ft_putchar(' ');
+	ft_putnbr_base(t, 2, 8);
+	ft_putchar(' ');
+	ft_putnbr_base(f, 2, 8);
+	ft_putchar(' ');
+	ft_putnbr_base(i, 2, 8);
+	ft_putchar(' ');
+	if (ELF64_ST_TYPE(i) == STT_GNU_IFUNC)
+		return ('i');
+	else if (type_b(t) && flag_b(f))
 		return (switch_global(ELF64_ST_BIND(i), 'b'));
 	else if (type_d(t) && flag_d(f))
 		return (switch_global(ELF64_ST_BIND(i), 'd'));
