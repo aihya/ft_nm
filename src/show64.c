@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/24 18:49:38 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/25 19:08:43 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,34 +32,58 @@ static void	print64_addr(t_node *node)
 
 static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
 {
-	ft_putnbr_base(SHT_NOBITS, 2, 8);
-	ft_putchar(' ');
-	ft_putnbr_base(t, 2, 8);
-	ft_putchar(' ');
-	ft_putnbr_base(f, 2, 8);
-	ft_putchar(' ');
-	ft_putnbr_base(i, 2, 8);
-	ft_putchar(' ');
-	if (ELF64_ST_TYPE(i) == STT_GNU_IFUNC)
-		return ('i');
-	else if (type_b(t) && flag_b(f))
-		return (switch_global(ELF64_ST_BIND(i), 'b'));
-	else if (type_d(t) && flag_d(f))
-		return (switch_global(ELF64_ST_BIND(i), 'd'));
-	else if (type_t(t) && flag_t(f))
-		return (switch_global(ELF64_ST_BIND(i), 't'));
-	else if (type_r(t) && flag_r(f))
-		return (switch_global(ELF64_ST_BIND(i), 'r'));
-	else if (type_n(t))
-		return ('n');
-	else if (t == SHT_RELA || t == SHT_REL)
-		return ('r');
-	return ('?');
+	// ft_putnbr_base(f, 2, 8);
+	// ft_putchar(' ');
+	// ft_putnbr_base(SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE, 2, 8);
+	// ft_putchar(' ');
+	// ft_putnbr_base(SHF_ALLOC, 2, 8);
+	// ft_putchar(' ');
+	// ft_putnbr_base(f, 2, 8);
+	// ft_putchar(' ');
+	// ft_putnbr_base(i, 2, 8);
+	// ft_putchar(' ');
+	// if (ELF64_ST_TYPE(i) == STT_GNU_IFUNC)
+	// 	return ('i');
+	// else if (t == SHT_IA_64_UNWIND)
+	// 	return (switch_global(ELF64_ST_BIND(i), 'p'));
+	// else if (t == SHT_NOBITS && f == SHF_IA_64_SHORT)
+	// 	return (switch_global(ELF64_ST_BIND(i), 's'));
+	// else if (t == SHT_NOBITS)
+	// 	return (switch_global(ELF64_ST_BIND(i), 'b'));
+	// else if (type_d(t) && flag_d(f))
+	// 	return (switch_global(ELF64_ST_BIND(i), 'd'));
+	// else if (type_t(t) && flag_t(f))
+	// 	return (switch_global(ELF64_ST_BIND(i), 't'));
+	// else if (type_r(t) && flag_r(f))
+	// 	return (switch_global(ELF64_ST_BIND(i), 'r'));
+	// else if (type_n(t))
+	// 	return ('n');
+	// else if (t == SHT_RELA || t == SHT_REL)
+	// 	return ('r');
+	// return ('?');
+	unsigned char c = '?';
+
+	if (t == SHT_NOBITS)
+		c = (f & SHF_IA_64_SHORT) ? 's' : 'b';
+	else if (t == SHT_IA_64_UNWIND)
+		c = 'p';
+	else if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == SHF_ALLOC)
+		c = 'r';
+	else if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE))
+		c = (f & SHF_IA_64_SHORT) ? 'g' : 'd';
+	else if (f == 0)
+		c = 'n';
+	if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_EXECINSTR))
+		c = 't';
+	if (c != 'p')
+		c = switch_global(ELF64_ST_BIND(i), c);
+	return (c);
 }
 
 static unsigned char	elf64_sec_char(Elf64_Shdr *sec, char *name)
 {
-	if (ft_strncmp(name, ".debug", 6) == 0)
+	(void)name;
+	if (sec->sh_flags == 0)
 		return ('N');
 	return (elf64_char(sec->sh_type, sec->sh_flags, sec->sh_info));
 }
