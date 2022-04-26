@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:38:46 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/25 19:08:43 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/26 13:51:05 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
 	// ft_putchar(' ');
 	// ft_putnbr_base(SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE, 2, 8);
 	// ft_putchar(' ');
-	// ft_putnbr_base(SHF_ALLOC, 2, 8);
+
+	// ft_putnbr_base(SHT_NOBITS, 2, 8);
+	// ft_putchar(' ');
+	// ft_putnbr_base(t, 2, 8);
 	// ft_putchar(' ');
 	// ft_putnbr_base(f, 2, 8);
 	// ft_putchar(' ');
@@ -63,19 +66,21 @@ static unsigned char	elf64_char(uint64_t t, uint64_t f, uint64_t i)
 	// return ('?');
 	unsigned char c = '?';
 
-	if (t == SHT_NOBITS)
-		c = (f & SHF_IA_64_SHORT) ? 's' : 'b';
-	else if (t == SHT_IA_64_UNWIND)
+	if (t == SHT_IA_64_UNWIND)
 		c = 'p';
 	else if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == SHF_ALLOC)
 		c = 'r';
-	else if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE))
+	else if (type_b(t) && (f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE))
+		c = (f & SHF_IA_64_SHORT) ? 's' : 'b';
+	else if (type_d(t) && (f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE))
 		c = (f & SHF_IA_64_SHORT) ? 'g' : 'd';
-	else if (f == 0)
+	else if ((t == SHT_PROGBITS) || (t == SHT_GROUP))
 		c = 'n';
-	if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_EXECINSTR))
+	else if ((f & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == (SHF_ALLOC | SHF_EXECINSTR))
 		c = 't';
-	if (c != 'p')
+	else if (f == 0)
+		c = 'N';
+	if (c != 'p' && c != 'N' && t != SHT_REL && t != SHT_RELA)
 		c = switch_global(ELF64_ST_BIND(i), c);
 	return (c);
 }
@@ -92,25 +97,27 @@ static unsigned char	elf64_sym_char(t_elf64 *elf, Elf64_Sym *sym)
 {
 	uint64_t	type;
 	uint64_t	flag;
+	char		c;
 
-	if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
+	c = '?';
+	if (ELF64_ST_TYPE(sym->st_info) == STT_GNU_IFUNC)
+		return ('i');
+	else if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
 	{
 		if (ELF64_ST_TYPE(sym->st_info) == STT_OBJECT)
-		{
-			if (sym->st_shndx == SHN_UNDEF)
-				return ('v');
-			return ('V');
-		}
-		if (sym->st_shndx == SHN_UNDEF)
-			return ('w');
-		return ('W');
+			c = sym->st_shndx == SHN_UNDEF ? 'v' : 'V';
+		c = sym->st_shndx == SHN_UNDEF && c == '?' ? 'w' : c == '?' ? 'W' : c;
 	}
-	if (sym->st_shndx == SHN_UNDEF)
-		return ('U');
+	else if (sym->st_shndx == SHN_UNDEF)
+		c = 'U';
+	else if (ELF64_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
+		c = 'u';
 	else if (sym->st_shndx == SHN_COMMON)
-		return (switch_global(ELF64_ST_BIND(sym->st_info), 'c'));
+		c = switch_global(ELF64_ST_BIND(sym->st_info), 'c');
 	else if (sym->st_shndx == SHN_ABS)
-		return (switch_global(ELF64_ST_BIND(sym->st_info), 'a'));
+		c = switch_global(ELF64_ST_BIND(sym->st_info), 'a');
+	if (c != '?')
+		return (c);
 	type = elf->shdr[sym->st_shndx].sh_type;
 	flag = elf->shdr[sym->st_shndx].sh_flags;
 	return (elf64_char(type, flag, sym->st_info));

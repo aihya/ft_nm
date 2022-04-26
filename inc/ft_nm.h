@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/22 16:57:05 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/26 13:03:20 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_node	**ht_init();
 void	ht_add_node(t_node **hashtable, t_node *node, int arch, int ops);
 t_node	*forward_list(t_node **hashtable);
 t_node	*reverse_list(t_node **hashtable);
-void	print(t_node **hashtable);
+void	print(t_node **hashtable, int i);
 
 void			elf64(void *ptr, int ops);
 t_elf64			*elf64_init(void *ptr);

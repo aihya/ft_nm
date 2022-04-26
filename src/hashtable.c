@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 22:39:25 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/23 20:45:22 by aihya            ###   ########.fr       */
+/*   Updated: 2022/04/26 13:24:48 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,9 @@ void	add_after(t_node *curr, t_node *node)
 
 void	ht_add_node(t_node **hashtable, t_node *node, int arch, int ops)
 {
-	t_node	*curr;
 	t_node	**head;
+	t_node	*curr;
+	t_node	*t;
 
 	head = &hashtable[0];
 	if (!(ops & OP_P))
@@ -58,7 +59,6 @@ void	ht_add_node(t_node **hashtable, t_node *node, int arch, int ops)
 		*head = node;
 	else
 	{
-		(void)arch;
 		curr = *head;
 		if (ops & OP_P)
 		{
@@ -68,32 +68,40 @@ void	ht_add_node(t_node **hashtable, t_node *node, int arch, int ops)
 			node->prev = curr;
 			return ;
 		}
-		while (curr && ft_strcmp(node->name, curr->name) > 0 && curr->next)
+		t = NULL;
+		while (curr)
+		{
+			if (ft_strcmp(node->name, curr->name) < 0
+			||	(ft_strcmp(node->name, curr->name) == 0 && addr(node, arch) < addr(curr, arch)))
+			{
+				add_before(head, curr, node);
+				return ;
+			}
+			t = curr;
 			curr = curr->next;
-		if (curr->next || ft_strcmp(node->name, curr->name) < 0)
-			add_before(head, curr, node);
-		else
-			add_after(curr, node);
+		}
+		add_after(t, node);
 	}
 }
 
-void	print(t_node **hashtable)
+void	print(t_node **hashtable, int i)
 {
-	int		i;
+	// int		i;
 	t_node	*node;
 
-	i = -1;
-	while (++i < HT_SIZE)
-	{
-		node = hashtable[i];
-		if (node)
-			printf("%d\n", i);
+	// i = -1;
+	// while (++i < HT_SIZE)
+	// {
+	// 	node = hashtable[i];
+	// 	if (node)
+	// 		printf("%d\n", i);
+	node = hashtable[i];
 		while (node)
 		{
 			printf("\t%s\n", node->name);
 			node = node->next;
 		}
-	}
+	// }
 }
 
 t_node	*forward_list(t_node **hashtable)
@@ -129,7 +137,6 @@ t_node	*reverse_list(t_node **hashtable)
 	t_node	*prev;
 	int		i;
 
-	print(hashtable);
 	head = NULL;
 	prev = NULL;
 	i = HT_SIZE;
