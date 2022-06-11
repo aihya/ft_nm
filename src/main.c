@@ -1,5 +1,19 @@
 #include "ft_nm.h"
 
+int     error(char *name, char *msg)
+{
+    ft_putstr("ft_nm: ");
+    if (name)
+    {
+        ft_putstr(name);
+        ft_putstr(": ");
+    }
+    if (msg)
+        ft_putstr(msg);
+    ft_putchar('\n');
+    return (ERROR);
+}
+
 static void	ft_nm(void *ptr, int ops)
 {
 	Elf64_Ehdr	*header;
