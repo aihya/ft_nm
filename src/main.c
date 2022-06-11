@@ -5,72 +5,58 @@ static void	ft_nm(void *ptr, int ops)
 	Elf64_Ehdr	*header;
 
 	header = (Elf64_Ehdr *)ptr;
-	if (header->e_type != ET_REL && header->e_type != ET_DYN)
+	if (header->e_type & (ET_REL | ET_EXEC | ET_DYN) == 0)
 		return ;
-	if (header->e_machine != EM_386 && header->e_machine != EM_X86_64)
+	if (header->e_machine & (EM_32 | EM_64) == 0)
 		return ;
 	if (header->e_machine == ELF_32)
 		elf32(ptr, ops);
-	else if (header->e_machine == ELF_64)
+	else
 		elf64(ptr, ops);
 }
 
-int	num_files(int argc, char **argv)
-{
-	int	c;
-	int	i;
-
-	c = 0;
-	i = 0;
-	while (++i < argc)
-	{
-		if (argv[i][0] != '-')
-			c++;
-	}
-	return (c);
-}
-
-int	ft_nm_file(char *name, int ops)
+int	file(char *name, int ops)
 {
 	int			fd;
 	void		*ptr;
 	struct stat	st;
 
+
+	fd = open(name, O_RDONLY);
+	fstat(fd, *st);
 	fd = open_file(name, &st);
-	if (fd == ERROR)
-		return (EXIT_FAILURE);
+	if (fd == -1)
+		return (1);
 	ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
 	{
 		error("mmap", "Failed to map file to memory");
-		return (EXIT_FAILURE);
+		return (1);
 	}
 	ft_nm(ptr, ops);
 	if (munmap(ptr, st.st_size) < 0)
 	{
 		error("munmap", "Failed to unmap file from memory");
-		return (EXIT_FAILURE);
+		return (1);
 	}
 	if (close(fd) == -1)
 	{
 		error("close", "Failed to close file descriptor");
-		return (EXIT_FAILURE);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
 
-int	ft_nm_files(int argc, char **argv, int ops)
+int	files(int argc, char **argv)
 {
 	int	i;
 	int	ret;
 
-	ret = EXIT_SUCCESS;
+	ret = 0;
 	i = 0;
 	while (++i < argc)
 	{
-		if (argv[i][0] == '-')
-			continue ;
-		if (ft_nm_file(argv[i], ops) == ERROR)
+		if (ft_nm_file(argv[i]) == -1)
 			ret |= EXIT_FAILURE;
 	}
 	return (ret);
@@ -78,14 +64,7 @@ int	ft_nm_files(int argc, char **argv, int ops)
 
 int main(int argc, char **argv)
 {
-	int	ops;
-	int	names;
-
-	ops = DFLT;
-	names = parse_args(argc, argv, &ops);
-	if (ops == ERROR)
-		return (EXIT_FAILURE);
-	if (names == 0)
-		return (ft_nm_file("./a.out", ops));
-	return (ft_nm_files(argc, argv, ops));
+	if (argc - 1 == 0)
+		return (file("./a.out"));
+	return (files(argc, argv));
 }
