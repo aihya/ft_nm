@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/11 14:36:34 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/11 19:28:59 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,23 @@
 # define HT_SIZE 128
 # define ERROR -1
 
+// typedef struct s_elf64
+// {
+// 	char		*shst;
+// 	char		*strt;
+// 	Elf64_Ehdr	*ehdr;
+// 	Elf64_Shdr	*shdr;
+// 	Elf64_Shdr	*symt;
+// 	Elf64_Sym	*syms;
+// }	t_elf64;
+
 typedef struct s_elf64
 {
-	char		*shst;
-	char		*strt;
 	Elf64_Ehdr	*ehdr;
-	Elf64_Shdr	*shdr;
-	Elf64_Shdr	*symt;
-	Elf64_Sym	*syms;
-}	t_elf64;
+	Elf64_Shdr	*shtab;
+	Elf64_Shdr	*symtab;
+	Elf64_Shdr	*strtab;
+} t_elf64;
 
 typedef struct s_elf32
 {
@@ -65,6 +73,8 @@ t_node		*find_head(t_node **hashtable);
 void		add_node(t_node *node, t_node **hashtable);
 t_node**	init_hashtable();
 
+void    elf64(void *ptr);
+void    elf32(void *ptr);
 
 int				parse_args(int argc, char **argv, int *ops);
 void			alloc_node(t_node **head, t_node **curr);
