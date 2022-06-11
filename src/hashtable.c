@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:30:16 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/11 14:34:10 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/11 16:15:48 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,29 +25,29 @@ void    add_node(t_node *node, t_node **hashtable)
 {
     t_node          *curr;
     t_node          *prev;
-    int             i;
 
-    if (hashtable == NULL)
-        return (error(NULL, "Couldn't create hashtable."));
+    curr = hashtable[(int)(node->name[0])];
+    if (curr == NULL)
+    {
+        hashtable[(int)(node->name[0])] = node;
+        return ;
+    }
+    else if (ft_strcmp(node->name, curr->name) < 0)
+    {
+        node->next = curr;
+        hashtable[(int)(node->name[0])] = node;
+        return ;
+    }
     prev = NULL;
-    curr = hashtable[node->name[0]];
-    while (curr && curr->next)
+    while (curr)
     {
         if (ft_strcmp(node->name, curr->name) < 0)
             break;
         prev = curr;
         curr = curr->next;
     }
-    if (curr == NULL)
-        hashtable[node->name[0]] = node;
-    else
-    {
-        node->next = curr;
-        if (prev)
-            prev->next = node;
-        else
-            hashtable[node->name[0]] = node;
-    }
+    node->next = prev->next;
+    prev->next = node;
 }
 
 t_node  *find_head(t_node **hashtable)
@@ -67,11 +67,12 @@ t_node  *find_head(t_node **hashtable)
 t_node  *convert_to_list(t_node **hashtable)
 {
     t_node  *head;
-    t_node  *taißl;
+    t_node  *tail;
     t_node  *curr;
     int     i;
-    
+    printf("wee\n");
     tail = NULL;
+    head = NULL;
     i = 0;
     while (i < HT_SIZE)
     {
@@ -80,7 +81,10 @@ t_node  *convert_to_list(t_node **hashtable)
             if (head == NULL)
                 head = hashtable[i];
             if (tail)
+            {
                 tail->next = hashtable[i];
+                tail = tail->next;
+            }
             curr = hashtable[i];
             tail = curr;
             while (curr)
@@ -91,4 +95,5 @@ t_node  *convert_to_list(t_node **hashtable)
         }
         i++;
     }
+    return (head);
 }

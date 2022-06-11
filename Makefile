@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/22 14:45:04 by aihya            ###   ########.fr        #
+#    Updated: 2022/06/11 14:37:04 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,22 +14,7 @@
 
 NAME = ft_nm
 
-SRC_NAME =	elf.c \
-			elf32.c \
-			elf32_syms.c \
-			elf32_secs.c \
-			elf64.c \
-			elf64_syms.c \
-			elf64_secs.c \
-			show32.c \
-			show64.c \
-			flags.c \
-			types.c \
-			sort.c \
-			utils.c \
-			args.c \
-			file_check.c \
-			hashtable.c \
+SRC_NAME =	hashtable.c \
 			main.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)
@@ -40,7 +25,7 @@ OBJ_PATH =	obj
 SRC = $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 
-CFLAGS = -Wall \
+CFLAGS = #-Wall \
 		 -Werror \
 		 -Wextra
 

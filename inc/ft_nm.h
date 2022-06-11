@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/11 13:00:17 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/11 14:36:34 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define ELF_SYM 1
 # define ELF_SEC 2
 # define HT_SIZE 128
+# define ERROR -1
 
 typedef struct s_elf64
 {
@@ -43,7 +44,7 @@ typedef struct s_elf64
 typedef struct s_elf32
 {
 	char		*shst;
-	char		*st;
+	char		*strt;
 	Elf32_Ehdr	*ehdr;
 	Elf32_Shdr	*shdr;
 	Elf32_Shdr	*symt;
@@ -56,8 +57,14 @@ typedef struct s_node
 	char			*name;
 	uint64_t		type;
 	struct s_node	*next;
-	struct s_node	*prev;
 }	t_node;
+
+// hashtable
+t_node		*convert_to_list(t_node **hashtable);
+t_node		*find_head(t_node **hashtable);
+void		add_node(t_node *node, t_node **hashtable);
+t_node**	init_hashtable();
+
 
 int				parse_args(int argc, char **argv, int *ops);
 void			alloc_node(t_node **head, t_node **curr);
