@@ -15,15 +15,28 @@ static void	ft_nm(void *ptr, int ops)
 		elf64(ptr, ops);
 }
 
+int open_file(char *name, struct stat *st)
+{
+    int fd;
+
+    fd = open(name, O_RDONLY);
+    if (fd == -1 && errno == EACCES)
+        return (error(name, "Permission denied"));
+    else if (fd == -1)
+        return (error(name, "No such file or directory"));
+    if (fstat(fd, st) < 0)
+        return (error(name, "Permission denied"));
+    else if (S_ISDIR(st->st_mode))
+        return (error(name, "Is a directory"));
+    return (fd);
+}
+
 int	file(char *name, int ops)
 {
 	int			fd;
 	void		*ptr;
 	struct stat	st;
 
-
-	fd = open(name, O_RDONLY);
-	fstat(fd, *st);
 	fd = open_file(name, &st);
 	if (fd == -1)
 		return (1);
