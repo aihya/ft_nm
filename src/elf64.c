@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/16 08:35:03 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/16 08:44:26 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void    read_symbols(void *ptr, t_node **hashtable, t_elf64 *elf)
     i = 0;
     while (i < elf->symtab->sh_size / sizeof(Elf64_Sym))
     {
-        printf("%s\n", ptr + elf->strtab->sh_offset + elf->symtab[i].sh_name);
+        printf("%s\n", ptr + elf->strtab->sh_offset + (elf->symtab->sh_offset)[i].st_name);
         i++;
     }
 }
