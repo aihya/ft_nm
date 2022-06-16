@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/16 08:44:26 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/16 12:03:33 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,27 +28,39 @@ Elf64_Shdr  *get_shdr(void *ptr, char *name, t_elf64 *elf)
     return (NULL);
 }
 
+
+int init_elf64(void *ptr, t_elf64 *elf)
+{
+    elf->ehdr = (Elf64_Ehdr *)ptr;
+    elf->shtab = (Elf64_Shdr *)(ptr + elf->ehdr->e_shoff);
+    elf->symtsh = get_shdr(ptr, ".symtab", elf);
+    if (elf->symtsh == NULL)
+        return (STRIPPED);
+    elf->strtsh = get_shdr(ptr, ".strtab", elf);
+    elf->symtab = (Elf64_Sym *)(ptr + elf->symtsh->sh_offset);
+    elf->strtab = (char *)(ptr + elf->strtsh->sh_offset);
+    return (OK);
+}
+
+
 void    read_symbols(void *ptr, t_node **hashtable, t_elf64 *elf)
 {
     int i;
+    t_node  *node;
 
     i = 0;
-    while (i < elf->symtab->sh_size / sizeof(Elf64_Sym))
+    while (i < elf->symtsh->sh_size / sizeof(Elf64_Sym))
     {
-        printf("%s\n", ptr + elf->strtab->sh_offset + (elf->symtab->sh_offset)[i].st_name);
+        node = malloc(sizeof(t_node));
+        node->object = &(elf->symtab[i]);
+        node->name = elf->strtab + elf->symtab[i].st_name;
+        add_node(node, hashtable);
         i++;
     }
 }
 
-void    init_elf64(void *ptr, t_elf64 *elf)
-{
-    elf->ehdr = (Elf64_Ehdr *)ptr;
-    elf->shtab = (Elf64_Shdr *)(ptr + elf->ehdr->e_shoff);
-    elf->symtab = get_shdr(ptr, ".symtab", elf);
-    elf->strtab = get_shdr(ptr, ".strtab", elf);
-}
 
-void    elf64(void *ptr)
+int    elf64(void *ptr)
 {
     t_node  **hashtable;
     t_node  *symbols;
@@ -56,13 +68,14 @@ void    elf64(void *ptr)
     t_elf64 elf;
 
     hashtable = init_hashtable();
-    init_elf64(ptr, &elf);
+    if (init_elf64(ptr, &elf) == STRIPPED)
+        return (STRIPPED);
     read_symbols(ptr, hashtable, &elf);
-    // symbols = convert_to_list(hashtable);
-    // curr = symbols;
-    // while (curr)
-    // {
-    //     printf("%s\n", curr->name);
-    //     curr = curr->next;
-    // }
+    symbols = convert_to_list(hashtable);
+    curr = symbols;
+    while (curr)
+    {
+        printf("%x %s\n", ((Elf64_Sym *)curr->object)->st_info, curr->name);
+        curr = curr->next;
+    }
 }

@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:30:16 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/11 17:40:56 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/16 10:11:47 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_node**    init_hashtable()
     ft_bzero(hashtable, sizeof(t_node *) * HT_SIZE);
     return (hashtable);
 }
+
 
 void    add_node(t_node *node, t_node **hashtable)
 {
@@ -50,6 +51,7 @@ void    add_node(t_node *node, t_node **hashtable)
     prev->next = node;
 }
 
+
 t_node  *find_head(t_node **hashtable)
 {
     t_node  *head;
@@ -64,13 +66,14 @@ t_node  *find_head(t_node **hashtable)
     return (head);
 }
 
+
 t_node  *convert_to_list(t_node **hashtable)
 {
     t_node  *head;
     t_node  *tail;
     t_node  *curr;
     int     i;
-    printf("wee\n");
+
     tail = NULL;
     head = NULL;
     i = 0;
