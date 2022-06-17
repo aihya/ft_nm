@@ -6,11 +6,19 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/16 12:03:33 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/17 16:03:38 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+
+void    print_addr(t_node *node)
+{
+    if (((Elf64_Sym *)node->object)->st_value)
+        ft_putnbr_base(((Elf64_Sym *)node->object)->st_value, 16, 16);
+    else
+        ft_putstr("                ");
+}
 
 Elf64_Shdr  *get_shdr(void *ptr, char *name, t_elf64 *elf)
 {
@@ -75,7 +83,15 @@ int    elf64(void *ptr)
     curr = symbols;
     while (curr)
     {
-        printf("%x %s\n", ((Elf64_Sym *)curr->object)->st_info, curr->name);
+        if ((ELF64_ST_TYPE(((Elf64_Sym *)curr->object)->st_info) != STT_FILE
+        &&  ELF64_ST_TYPE(((Elf64_Sym *)curr->object)->st_info) != STT_SECTION))
+        {
+            print_addr(curr);
+            ft_putchar(' ');
+            ft_putchar(resolve_symbol_type(curr, &elf));
+            ft_putchar(' ');
+            ft_putendl(curr->name);
+        }
         curr = curr->next;
     }
 }

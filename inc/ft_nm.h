@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/16 10:12:48 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/17 14:56:30 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ t_node**	init_hashtable();
 int    elf64(void *ptr);
 void    elf32(void *ptr);
 
+char    resolve_symbol_type(t_node *node, t_elf64 *elf);
+
 int				parse_args(int argc, char **argv, int *ops);
 void			alloc_node(t_node **head, t_node **curr);
 void			sort(t_node *nodes, int arch);
@@ -93,7 +95,7 @@ unsigned int	type_r(uint64_t type);
 unsigned int	type_b(uint64_t type);
 unsigned int	type_t(uint64_t type);
 unsigned int	type_n(uint64_t type);
-unsigned char	switch_global(uint64_t info, char c);
 uint64_t		addr(t_node *node, int arch);
+char	switch_global(uint64_t info, char c);
 
 #endif
