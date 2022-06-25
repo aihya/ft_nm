@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 14:37:40 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 19:13:39 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static void    read_symbols(void *ptr, t_node **hashtable, t_elf64 *elf)
 }
 
 
-int    elf64(void *ptr)
+void            elf64(void *ptr, char *name)
 {
     t_node  **hashtable;
     t_node  *symbols;
@@ -85,7 +85,10 @@ int    elf64(void *ptr)
 
     hashtable = init_hashtable();
     if (init_elf64(ptr, &elf) == STRIPPED)
-        return (STRIPPED);
+    {
+        error(name, "no symbols");
+        return ;
+    }
     read_symbols(ptr, hashtable, &elf);
     symbols = convert_to_list(hashtable);
     curr = symbols;

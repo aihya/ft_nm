@@ -6,11 +6,10 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 15:00:01 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 18:58:26 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "ft_nm.h"
 #include "elf32.h"
 
 static char switch_global(uint64_t info, char c)
@@ -21,7 +20,7 @@ static char switch_global(uint64_t info, char c)
 }
 
 
-static Elf32_Shdr  *resolve_section(t_node *node, t_elf32 *elf)
+static Elf32_Shdr   *resolve_section(t_node *node, t_elf32 *elf)
 {
     return (&elf->shtab[((Elf32_Sym *)node->object)->st_shndx]);
 }
@@ -32,6 +31,7 @@ char        *section_name32(t_node *node, t_elf32 *elf)
     Elf32_Shdr  *sec;
 
     sec = resolve_section(node, elf);
+    printf(" Wooo\n");
     return ((char *)(elf->ptr + elf->shstrtab->sh_offset + sec->sh_name));
 }
 
@@ -114,9 +114,11 @@ char    resolve_symbol_type32(t_node *node, t_elf32 *elf)
             return (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT ? 'v' : 'w');
         return (ELF32_ST_TYPE(sym->st_info) == STT_OBJECT ? 'V' : 'W');
     }
-    if (   ELF32_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
+    if (ELF32_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
         return ('u');
-    if (   sec->sh_type == SHN_UNDEF)
+    if (sec->sh_type == SHN_ABS)
+        return (switch_global(sym->st_info, 'a'));
+    if (sec->sh_type == SHN_UNDEF)
         return ('U');      
     if (type_d(node, elf))
         return (switch_global(sym->st_info, 'd'));

@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 16:51:48 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 19:11:07 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ t_node		*find_head(t_node **hashtable);
 void		add_node(t_node *node, t_node **hashtable);
 
 
-int			elf32(void *ptr);
-int			elf64(void *ptr);
+void		elf32(void *ptr, char *name);
+void		elf64(void *ptr, char *name);
 
 
 // Utility functions

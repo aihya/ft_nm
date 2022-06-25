@@ -35,12 +35,12 @@ static void	ft_nm(void *ptr, char *name)
 	if (header->e_ident[EI_CLASS] == ELFCLASS32)
 	{
 		ft_putendl("Wee1");
-		elf32(ptr);
+		elf32(ptr, name);
 	}
 	if (header->e_ident[EI_CLASS] == ELFCLASS64)
 	{
 		ft_putendl("Wee2");
-		elf64(ptr);
+		elf64(ptr, name);
 	}
 }
 

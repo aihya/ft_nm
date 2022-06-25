@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 14:59:35 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 18:43:01 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,8 @@ char    resolve_symbol_type64(t_node *node, t_elf64 *elf)
     }
     if (ELF64_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
         return ('u');
+    if (sec->sh_type == SHN_ABS)
+        return (switch_global(sym->st_info, 'a'));
     if (sec->sh_type == SHN_UNDEF)
         return ('U');      
     if (type_d(node, elf))

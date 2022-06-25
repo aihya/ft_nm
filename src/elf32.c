@@ -6,13 +6,13 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:27:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 16:58:32 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 19:11:58 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "elf32.h"
 
-void    print_addr(t_node *node, t_elf32 *elf)
+static void    print_addr(t_node *node, t_elf32 *elf)
 {
     if (((Elf32_Sym *)node->object)->st_value)
         ft_putnbr_base(((Elf32_Sym *)node->object)->st_value, 16, 8);
@@ -26,7 +26,7 @@ void    print_addr(t_node *node, t_elf32 *elf)
 }
 
 
-Elf32_Shdr  *get_shdr(void *ptr, char *name, t_elf32 *elf)
+static Elf32_Shdr  *get_shdr(void *ptr, char *name, t_elf32 *elf)
 {
     int i;
     Elf32_Shdr    *shstrtab;
@@ -43,7 +43,7 @@ Elf32_Shdr  *get_shdr(void *ptr, char *name, t_elf32 *elf)
 }
 
 
-int init_elf32(void *ptr, t_elf32 *elf)
+static int init_elf32(void *ptr, t_elf32 *elf)
 {
     elf->ehdr = (Elf32_Ehdr *)ptr;
     elf->shtab = (Elf32_Shdr *)(ptr + elf->ehdr->e_shoff);
@@ -59,7 +59,7 @@ int init_elf32(void *ptr, t_elf32 *elf)
 }
 
 
-void    read_symbols(void *ptr, t_node **hashtable, t_elf32 *elf)
+static void    read_symbols(void *ptr, t_node **hashtable, t_elf32 *elf)
 {
     int i;
     t_node  *node;
@@ -76,7 +76,7 @@ void    read_symbols(void *ptr, t_node **hashtable, t_elf32 *elf)
 }
 
 
-int    elf32(void *ptr)
+void            elf32(void *ptr, char *name)
 {
     t_node  **hashtable;
     t_node  *symbols;
@@ -85,25 +85,24 @@ int    elf32(void *ptr)
 
     hashtable = init_hashtable();
     if (init_elf32(ptr, &elf) == STRIPPED)
-        return (STRIPPED);
+    {
+        error(name, "no symbols");
+        return ;
+    }
     read_symbols(ptr, hashtable, &elf);
     symbols = convert_to_list(hashtable);
     curr = symbols;
     while (curr)
     {
-    ft_putendl(curr->name);
         if ((ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_FILE
         &&  ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_SECTION)
         &&  curr->name[0])
         {
+    ft_putendl(curr->name);
             print_addr(curr, &elf);
             ft_putchar(' ');
             ft_putchar(resolve_symbol_type32(curr, &elf));
             ft_putchar(' ');
-            // ft_putnbr_base(ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info), 2, 8);
-            // ft_putchar(' ');
-            // ft_putstr(resolve_section(curr, &elf)->sh_type == SHT_PROGBITS ? "TRUE " : "FALSE");
-            // ft_putchar(' ');
             ft_putendl(curr->name);
             // ft_putstr(curr->name);
             // ft_putchar(' ');
@@ -113,34 +112,4 @@ int    elf32(void *ptr)
         }
         curr = curr->next;
     }
-    // ft_putstr("STT_NOTYPE\t ");
-    // ft_putnbr_base(STT_NOTYPE, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STT_OBJECT\t ");
-    // ft_putnbr_base(STT_OBJECT, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STT_FUNC\t ");
-    // ft_putnbr_base(STT_FUNC, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STT_SECTION\t ");
-    // ft_putnbr_base(STT_SECTION, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STT_FILE\t ");
-    // ft_putnbr_base(STT_FILE, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STT_LOPROC\t ");
-    // ft_putnbr_base(STT_LOPROC, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STT_HIPROC\t ");
-    // ft_putnbr_base(STT_HIPROC, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STB_LOCAL\t ");
-    // ft_putnbr_base(STB_LOCAL, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STB_GLOBAL\t ");
-    // ft_putnbr_base(STB_GLOBAL, 2, 8);
-    // ft_putendl("");
-    // ft_putstr("STB_WEAK\t ");
-    // ft_putnbr_base(STB_WEAK, 2, 8);
-    // ft_putendl("");
 }
