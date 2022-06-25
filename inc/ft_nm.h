@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 14:32:38 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 16:51:48 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # include "libft.h"
 # include <errno.h>
 
-# define ELF_32	EM_386
-# define ELF_64	EM_X86_64
+# define ELF_32	ELFCLASS32
+# define ELF_64	ELFCLASS64
 # define ELF_SYM 1
 # define ELF_SEC 2
 # define HT_SIZE 128

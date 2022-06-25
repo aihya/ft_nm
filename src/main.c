@@ -22,20 +22,24 @@ static void	ft_nm(void *ptr, char *name)
 	if (header->e_ident[EI_MAG0] != ELFMAG0
 	||	header->e_ident[EI_MAG1] != ELFMAG1
 	||	header->e_ident[EI_MAG2] != ELFMAG2
-	||	header->eo_ident[EI_MAG3] != ELFMAG3)
+	||	header->e_ident[EI_MAG3] != ELFMAG3)
 	{
 		error(name, "file format not recognized");
 		return ;
 	}
 	if (header->e_type != ET_REL && header->e_type != ET_DYN)
-		return ;
-	if (header->e_machine == ELF_32)
 	{
+		error(NULL, "supports only object files and shared objects");
+		return ;
+	}
+	if (header->e_ident[EI_CLASS] == ELFCLASS32)
+	{
+		ft_putendl("Wee1");
 		elf32(ptr);
 	}
-	else if (header->e_machine == ELF_64)
+	if (header->e_ident[EI_CLASS] == ELFCLASS64)
 	{
-		ft_putendl("Zlaygaa");
+		ft_putendl("Wee2");
 		elf64(ptr);
 	}
 }
@@ -74,7 +78,7 @@ int	ft_nm_file(char *name)
 		error("mmap", "Failed to map file to memory");
 		return (EXIT_FAILURE);
 	}
-	ft_nm(ptr);
+	ft_nm(ptr, name);
 	if (munmap(ptr, st.st_size) < 0)
 	{
 		error("munmap", "Failed to unmap file from memory");

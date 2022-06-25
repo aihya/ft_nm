@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:27:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 15:45:35 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 16:58:32 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int    elf32(void *ptr)
     t_node  *curr;
     t_elf32 elf;
 
-    ft_putendl("Waaahwah");
     hashtable = init_hashtable();
     if (init_elf32(ptr, &elf) == STRIPPED)
         return (STRIPPED);
@@ -92,6 +91,7 @@ int    elf32(void *ptr)
     curr = symbols;
     while (curr)
     {
+    ft_putendl(curr->name);
         if ((ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_FILE
         &&  ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_SECTION)
         &&  curr->name[0])
