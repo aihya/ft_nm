@@ -6,21 +6,27 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/17 16:03:38 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 14:37:40 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "elf64.h"
 
-void    print_addr(t_node *node)
+static void    print_addr(t_node *node, t_elf64 *elf)
 {
     if (((Elf64_Sym *)node->object)->st_value)
         ft_putnbr_base(((Elf64_Sym *)node->object)->st_value, 16, 16);
     else
-        ft_putstr("                ");
+    {
+        if (section_name64(node, elf)[0])
+            ft_putnbr_base(0, 16, 16);
+        else
+            ft_putstr("                ");
+    }
 }
 
-Elf64_Shdr  *get_shdr(void *ptr, char *name, t_elf64 *elf)
+
+static Elf64_Shdr  *get_shdr(void *ptr, char *name, t_elf64 *elf)
 {
     int i;
     Elf64_Shdr    *shstrtab;
@@ -37,7 +43,7 @@ Elf64_Shdr  *get_shdr(void *ptr, char *name, t_elf64 *elf)
 }
 
 
-int init_elf64(void *ptr, t_elf64 *elf)
+static int init_elf64(void *ptr, t_elf64 *elf)
 {
     elf->ehdr = (Elf64_Ehdr *)ptr;
     elf->shtab = (Elf64_Shdr *)(ptr + elf->ehdr->e_shoff);
@@ -47,11 +53,13 @@ int init_elf64(void *ptr, t_elf64 *elf)
     elf->strtsh = get_shdr(ptr, ".strtab", elf);
     elf->symtab = (Elf64_Sym *)(ptr + elf->symtsh->sh_offset);
     elf->strtab = (char *)(ptr + elf->strtsh->sh_offset);
+    elf->ptr = ptr;
+    elf->shstrtab = &elf->shtab[elf->ehdr->e_shstrndx];
     return (OK);
 }
 
 
-void    read_symbols(void *ptr, t_node **hashtable, t_elf64 *elf)
+static void    read_symbols(void *ptr, t_node **hashtable, t_elf64 *elf)
 {
     int i;
     t_node  *node;
@@ -84,13 +92,19 @@ int    elf64(void *ptr)
     while (curr)
     {
         if ((ELF64_ST_TYPE(((Elf64_Sym *)curr->object)->st_info) != STT_FILE
-        &&  ELF64_ST_TYPE(((Elf64_Sym *)curr->object)->st_info) != STT_SECTION))
+        &&  ELF64_ST_TYPE(((Elf64_Sym *)curr->object)->st_info) != STT_SECTION)
+        &&  curr->name[0])
         {
-            print_addr(curr);
+            print_addr(curr, &elf);
             ft_putchar(' ');
-            ft_putchar(resolve_symbol_type(curr, &elf));
+            ft_putchar(resolve_symbol_type64(curr, &elf));
             ft_putchar(' ');
             ft_putendl(curr->name);
+            // ft_putstr(curr->name);
+            // ft_putchar(' ');
+            // ft_putchar('[');
+            // ft_putstr(section_name(curr, &elf));
+            // ft_putendl("]");
         }
         curr = curr->next;
     }

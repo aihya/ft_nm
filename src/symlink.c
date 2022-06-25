@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_begins_with.c                                   :+:      :+:    :+:   */
+/*   symlink.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/26 15:18:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 11:23:10 by aihya            ###   ########.fr       */
+/*   Created: 2022/06/25 15:24:15 by aihya             #+#    #+#             */
+/*   Updated: 2022/06/25 15:25:53 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_nm"
 
-int	ft_begins_with(const char *haystack, const char *needle)
+void    resolve_symlink()
 {
-	return (!ft_strncmp(haystack, needle, ft_strlen(needle)));
+    
 }

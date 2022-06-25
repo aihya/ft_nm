@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_begins_with.c                                   :+:      :+:    :+:   */
+/*   ft_ends_with.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/26 15:18:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 11:23:10 by aihya            ###   ########.fr       */
+/*   Created: 2022/06/25 10:43:57 by aihya             #+#    #+#             */
+/*   Updated: 2022/06/25 10:45:43 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_begins_with(const char *haystack, const char *needle)
+int	ft_ends_with(const char *haystack, const char *needle)
 {
-	return (!ft_strncmp(haystack, needle, ft_strlen(needle)));
+	size_t	h_len;
+	size_t	n_len;
+
+	h_len = ft_strlen(haystack);
+	n_len = ft_strlen(needle);
+	if (n_len <= h_len)
+		return (!ft_strcmp(haystack + (h_len - n_len), needle));
+	return (0);
 }

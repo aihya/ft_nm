@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/05 23:15:26 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/12 15:00:32 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/25 10:45:55 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	ft_putnbr(long long n);
 void	ft_putnbr_fd(int n, int fd);
 char	*ft_strsjoin(const char *s1, const char *s2, const char *dl);
 int		ft_begins_with(const char *haystack, const char *needle);
+int     ft_ends_with(const char *haystack, const char *needle);
 char	**ft_strsplit(char const *s, char c);
 size_t	ft_strmax(char **arr);
 size_t	ft_strmin(char **arr);

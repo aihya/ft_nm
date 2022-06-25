@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/06/17 14:20:15 by aihya            ###   ########.fr        #
+#    Updated: 2022/06/25 15:19:15 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ NAME = ft_nm
 SRC_NAME =	hashtable.c \
 			elf64.c \
 			elf32.c \
-			types.c \
+			types64.c \
+			types32.c \
 			main.c
 
 OBJ_NAME =	$(SRC_NAME:.c=.o)

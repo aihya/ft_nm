@@ -14,19 +14,30 @@ int     error(char *name, char *msg)
     return (ERROR);
 }
 
-static void	ft_nm(void *ptr)
+static void	ft_nm(void *ptr, char *name)
 {
 	Elf64_Ehdr	*header;
 
 	header = (Elf64_Ehdr *)ptr;
+	if (header->e_ident[EI_MAG0] != ELFMAG0
+	||	header->e_ident[EI_MAG1] != ELFMAG1
+	||	header->e_ident[EI_MAG2] != ELFMAG2
+	||	header->eo_ident[EI_MAG3] != ELFMAG3)
+	{
+		error(name, "file format not recognized");
+		return ;
+	}
 	if (header->e_type != ET_REL && header->e_type != ET_DYN)
 		return ;
-	if (header->e_machine != EM_386 && header->e_machine != EM_X86_64)
-		return ;
 	if (header->e_machine == ELF_32)
+	{
 		elf32(ptr);
+	}
 	else if (header->e_machine == ELF_64)
+	{
+		ft_putendl("Zlaygaa");
 		elf64(ptr);
+	}
 }
 
 int open_file(char *name, struct stat *st)
@@ -40,8 +51,10 @@ int open_file(char *name, struct stat *st)
         return (error(name, "No such file or directory"));
     if (fstat(fd, st) < 0)
         return (error(name, "Permission denied"));
-    else if (S_ISDIR(st->st_mode))
+    if (S_ISDIR(st->st_mode))
         return (error(name, "Is a directory"));
+	if (S_ISLNK(st->st_mode))
+		return (error(name, "Is a symbolic link"));
     return (fd);
 }
 
@@ -54,6 +67,7 @@ int	ft_nm_file(char *name)
 	fd = open_file(name, &st);
 	if (fd == ERROR)
 		return (EXIT_FAILURE);
+	
 	ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
 	{
