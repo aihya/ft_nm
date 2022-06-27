@@ -1,4 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/27 17:22:55 by aihya             #+#    #+#             */
+/*   Updated: 2022/06/27 19:06:15 by aihya            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_nm.h"
+
 
 int     error(char *name, char *msg)
 {
@@ -13,6 +26,7 @@ int     error(char *name, char *msg)
     ft_putchar('\n');
     return (ERROR);
 }
+
 
 static void	ft_nm(void *ptr, char *name)
 {
@@ -33,16 +47,11 @@ static void	ft_nm(void *ptr, char *name)
 		return ;
 	}
 	if (header->e_ident[EI_CLASS] == ELFCLASS32)
-	{
-		ft_putendl("Wee1");
 		elf32(ptr, name);
-	}
 	if (header->e_ident[EI_CLASS] == ELFCLASS64)
-	{
-		ft_putendl("Wee2");
 		elf64(ptr, name);
-	}
 }
+
 
 int open_file(char *name, struct stat *st)
 {
@@ -55,12 +64,13 @@ int open_file(char *name, struct stat *st)
         return (error(name, "No such file or directory"));
     if (fstat(fd, st) < 0)
         return (error(name, "Permission denied"));
-    if (S_ISDIR(st->st_mode))
-        return (error(name, "Is a directory"));
 	if (S_ISLNK(st->st_mode))
 		return (error(name, "Is a symbolic link"));
+    if (S_ISDIR(st->st_mode))
+        return (error(name, "Is a directory"));
     return (fd);
 }
+
 
 int	ft_nm_file(char *name)
 {
@@ -92,6 +102,7 @@ int	ft_nm_file(char *name)
 	return (1);
 }
 
+
 int	ft_nm_files(int argc, char **argv)
 {
 	int	i;
@@ -107,62 +118,10 @@ int	ft_nm_files(int argc, char **argv)
 	return (ret);
 }
 
+
 int main(int argc, char **argv)
 {
 	if (argc - 1 == 0)
 		return (ft_nm_file("./a.out"));
 	return (ft_nm_files(argc, argv));
-	// t_node **hashtable;
-	// t_node *list;
-
-	// (void)argc;
-	// (void)argv;
-
-	// hashtable = init_hashtable();
-
-	// t_node n1;
-	// t_node n2;
-	// t_node n3;
-	// t_node n4;
-
-	// n1.name = "aab";
-	// n2.name = "aws";
-	// n3.name = "aaa";
-	// n4.name = "aaa";
-
-	// n1.object = 0x2;
-	// n2.object = 0x6;
-	// n3.object = 0x1;
-	// n4.object = 0x9;
-
-	// n1.next = NULL;
-	// n2.next = NULL;
-	// n3.next = NULL;
-	// n4.next = NULL;
-
-	// add_node(&n1, hashtable);
-	// add_node(&n2, hashtable);
-	// add_node(&n3, hashtable);
-	// add_node(&n4, hashtable);
-
-	// int	i = 0;
-	// t_node *curr;
-	// while (i < HT_SIZE)
-	// {
-	// 	printf("%d:\n", i);
-	// 	curr = hashtable[i];
-	// 	while (curr)
-	// 	{
-	// 		printf("%s\n", curr->name);
-	// 		curr = curr->next;
-	// 	}
-	// 	i++;
-	// }
-
-	// list = convert_to_list(hashtable);
-	// while (list)
-	// {
-	// 	printf("%s %d\n", list->name, (int)(list->object));
-	// 	list = list->next;
-	// }
 }

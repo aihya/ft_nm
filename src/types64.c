@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 18:43:01 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/27 19:24:43 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ static char switch_global(uint64_t info, char c)
 }
 
 
-static Elf64_Shdr   *resolve_section(t_node *node, t_elf64 *elf)
+Elf64_Shdr   *resolve_section64(t_node *node, t_elf64 *elf)
 {
+    if (((Elf64_Sym *)node->object)->st_shndx == SHN_ABS)
+        return (NULL);
     return (&elf->shtab[((Elf64_Sym *)node->object)->st_shndx]);
 }
 
@@ -30,7 +32,9 @@ char        *section_name64(t_node *node, t_elf64 *elf)
 {
     Elf64_Shdr  *sec;
 
-    sec = resolve_section(node, elf);
+    sec = resolve_section64(node, elf);
+    if (sec == NULL)
+        return "\0";
     return ((char *)(elf->ptr + elf->shstrtab->sh_offset + sec->sh_name));
 }
 
@@ -78,7 +82,7 @@ static int  type_t(t_node *node, t_elf64 *elf)
 
 static int  type_r(t_node *node, t_elf64 *elf)
 {
-    char    *name;
+    char        *name;
 
     name = section_name64(node, elf);
     if (!ft_strncmp(".eh", name, 3)
@@ -99,14 +103,26 @@ static int  type_N(t_node *node, t_elf64 *elf)
 }
 
 
+static int  type_n(t_node *node, t_elf64 *elf)
+{
+    char    *name;
+
+    name = section_name64(node, elf);
+    if (ft_begins_with(name, ".debug"))
+        return (1);
+    return (0);
+}
+
+
 char    resolve_symbol_type64(t_node *node, t_elf64 *elf)
 {
     Elf64_Sym   *sym;
     Elf64_Shdr  *sec;
     
     sym = (Elf64_Sym *)node->object;
-    sec = resolve_section(node, elf);
-
+    sec = resolve_section64(node, elf);
+    if (sec == NULL)
+        return (switch_global(sym->st_info, 'a'));
     if (ELF64_ST_BIND(sym->st_info) == STB_WEAK)
     {
         if (sec->sh_type == SHN_UNDEF)
@@ -115,17 +131,17 @@ char    resolve_symbol_type64(t_node *node, t_elf64 *elf)
     }
     if (ELF64_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
         return ('u');
-    if (sec->sh_type == SHN_ABS)
-        return (switch_global(sym->st_info, 'a'));
     if (sec->sh_type == SHN_UNDEF)
         return ('U');      
     if (type_d(node, elf))
         return (switch_global(sym->st_info, 'd'));
-    if (type_b(node, elf))
+    if (type_b(node, elf) || sec->sh_type == SHT_NOBITS)
         return (switch_global(sym->st_info, 'b'));
     if (type_t(node, elf))
         return (switch_global(sym->st_info, 't'));
-    if (type_r(node, elf))
+    if (type_n(node, elf) || sec->sh_type == SHT_NOTE)
+        return (switch_global(sym->st_info, 'n'));
+    if (type_r(node, elf) || sec->sh_type == SHT_PROGBITS)
         return (switch_global(sym->st_info, 'r'));
     if (type_N(node, elf))
         return ('N');

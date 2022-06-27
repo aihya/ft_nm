@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 19:13:39 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/27 19:22:56 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void    print_addr(t_node *node, t_elf64 *elf)
         ft_putnbr_base(((Elf64_Sym *)node->object)->st_value, 16, 16);
     else
     {
-        if (section_name64(node, elf)[0])
+        if (section_name64(node, elf)[0] || !resolve_section64(node, elf))
             ft_putnbr_base(0, 16, 16);
         else
             ft_putstr("                ");
@@ -106,7 +106,7 @@ void            elf64(void *ptr, char *name)
             // ft_putstr(curr->name);
             // ft_putchar(' ');
             // ft_putchar('[');
-            // ft_putstr(section_name(curr, &elf));
+            // ft_putstr(section_name64(curr, &elf));
             // ft_putendl("]");
         }
         curr = curr->next;
