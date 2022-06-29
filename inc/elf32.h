@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/25 12:38:53 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 14:34:38 by aihya            ###   ########.fr       */
+/*   Created: 2022/06/25 12:37:54 by aihya             #+#    #+#             */
+/*   Updated: 2022/06/29 16:09:36 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ typedef struct s_elf32
 	char		*strtab;
 } t_elf32;
 
-char    	resolve_symbol_type32(t_node *node, t_elf32 *elf);
-char        *section_name32(t_node *node, t_elf32 *elf);
+Elf32_Shdr	*resolve_section32(t_node *node, t_elf32 *elf);
+char		resolve_symbol_type32(t_node *node, t_elf32 *elf);
+char		*section_name32(t_node *node, t_elf32 *elf);
 
 #endif

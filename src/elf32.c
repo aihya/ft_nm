@@ -5,10 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/11 13:27:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 19:11:58 by aihya            ###   ########.fr       */
+/*   Created: 2022/06/29 16:00:00 by aihya             #+#    #+#             */
+/*   Updated: 2022/06/29 16:51:47 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include "elf32.h"
 
@@ -18,7 +20,7 @@ static void    print_addr(t_node *node, t_elf32 *elf)
         ft_putnbr_base(((Elf32_Sym *)node->object)->st_value, 16, 8);
     else
     {
-        if (section_name32(node, elf)[0])
+        if (section_name32(node, elf)[0] || ((Elf32_Sym *)node->object)->st_shndx == SHN_ABS)
             ft_putnbr_base(0, 16, 8);
         else
             ft_putstr("        ");
@@ -98,17 +100,11 @@ void            elf32(void *ptr, char *name)
         &&  ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_SECTION)
         &&  curr->name[0])
         {
-    ft_putendl(curr->name);
             print_addr(curr, &elf);
             ft_putchar(' ');
             ft_putchar(resolve_symbol_type32(curr, &elf));
             ft_putchar(' ');
             ft_putendl(curr->name);
-            // ft_putstr(curr->name);
-            // ft_putchar(' ');
-            // ft_putchar('[');
-            // ft_putstr(section_name(curr, &elf));
-            // ft_putendl("]");
         }
         curr = curr->next;
     }

@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/27 19:24:43 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/29 17:33:43 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,81 +39,6 @@ char        *section_name64(t_node *node, t_elf64 *elf)
 }
 
 
-static int  type_d(t_node *node, t_elf64 *elf)
-{
-    char    *name;
-
-    name = section_name64(node, elf);
-    if (!ft_strncmp(".data", name, 5)
-    ||  !ft_strcmp(".tdata", name)
-    ||  !ft_strcmp(".dynamic", name)
-    ||  ft_ends_with(name, "array")
-    ||  ft_begins_with(name, ".got")
-    ||  ft_begins_with(name, ".plt"))
-        return (1);
-    return (0);
-}
-
-
-static int  type_b(t_node *node, t_elf64 *elf)
-{
-    char    *name;
-
-    name = section_name64(node, elf);
-    if (!ft_strcmp(".bss", name)
-    ||  !ft_strcmp(".tbss", name))
-        return (1);
-    return (0);
-}
-
-
-static int  type_t(t_node *node, t_elf64 *elf)
-{
-    char    *name;
-
-    name = section_name64(node, elf);
-    if (!ft_strcmp(".text", name)
-    ||  !ft_strcmp(".fini", name)
-    ||  !ft_strcmp(".init", name))
-        return (1);
-    return (0);
-}
-
-
-static int  type_r(t_node *node, t_elf64 *elf)
-{
-    char        *name;
-
-    name = section_name64(node, elf);
-    if (!ft_strncmp(".eh", name, 3)
-    ||  ft_begins_with(name, ".ro"))
-        return (1);
-    return (0);
-}
-
-
-static int  type_N(t_node *node, t_elf64 *elf)
-{
-    char    *name;
-
-    name = section_name64(node, elf);
-    if (ft_begins_with(name, ".note"))
-        return (1);
-    return (0);
-}
-
-
-static int  type_n(t_node *node, t_elf64 *elf)
-{
-    char    *name;
-
-    name = section_name64(node, elf);
-    if (ft_begins_with(name, ".debug"))
-        return (1);
-    return (0);
-}
-
-
 char    resolve_symbol_type64(t_node *node, t_elf64 *elf)
 {
     Elf64_Sym   *sym;
@@ -132,18 +57,22 @@ char    resolve_symbol_type64(t_node *node, t_elf64 *elf)
     if (ELF64_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
         return ('u');
     if (sec->sh_type == SHN_UNDEF)
-        return ('U');      
-    if (type_d(node, elf))
-        return (switch_global(sym->st_info, 'd'));
-    if (type_b(node, elf) || sec->sh_type == SHT_NOBITS)
+        return ('U');
+    if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON)
+        return (switch_global(sym->st_info, 'c'));
+    // if (sec->sh_type == SDATA_SECTION_ASM_OP)
+    //     return (switch_global(sym->st_info, 's'));
+    if (sec->sh_type == SHT_NOBITS)
         return (switch_global(sym->st_info, 'b'));
-    if (type_t(node, elf))
+    if (sec->sh_flags & SHF_EXECINSTR)
         return (switch_global(sym->st_info, 't'));
-    if (type_n(node, elf) || sec->sh_type == SHT_NOTE)
-        return (switch_global(sym->st_info, 'n'));
-    if (type_r(node, elf) || sec->sh_type == SHT_PROGBITS)
+    if (sec->sh_flags & SHF_WRITE)
+        return (switch_global(sym->st_info, 'd'));
+    if (sec->sh_type == SHT_PROGBITS && (sec->sh_flags & SHF_ALLOC))
         return (switch_global(sym->st_info, 'r'));
-    if (type_N(node, elf))
+    if (sec->sh_type == SHT_PROGBITS)
+        return (switch_global(sym->st_info, 'n'));
+    if (sec->sh_type == SHT_NOTE)
         return ('N');
     return (' ');
 }

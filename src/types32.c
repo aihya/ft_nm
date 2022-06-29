@@ -6,13 +6,13 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 18:58:26 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/29 16:08:38 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "elf32.h"
 
-static char switch_global(uint64_t info, char c)
+static char switch_global(uint32_t info, char c)
 {
     if (ELF32_ST_BIND(info) & STB_GLOBAL)
         return (c - 32);
@@ -20,8 +20,10 @@ static char switch_global(uint64_t info, char c)
 }
 
 
-static Elf32_Shdr   *resolve_section(t_node *node, t_elf32 *elf)
+Elf32_Shdr   *resolve_section32(t_node *node, t_elf32 *elf)
 {
+    if (((Elf32_Sym *)node->object)->st_shndx == SHN_ABS)
+        return (NULL);
     return (&elf->shtab[((Elf32_Sym *)node->object)->st_shndx]);
 }
 
@@ -30,73 +32,10 @@ char        *section_name32(t_node *node, t_elf32 *elf)
 {
     Elf32_Shdr  *sec;
 
-    sec = resolve_section(node, elf);
-    printf(" Wooo\n");
+    sec = resolve_section32(node, elf);
+    if (sec == NULL)
+        return "\0";
     return ((char *)(elf->ptr + elf->shstrtab->sh_offset + sec->sh_name));
-}
-
-
-static int  type_d(t_node *node, t_elf32 *elf)
-{
-    char    *name;
-
-    name = section_name32(node, elf);
-    if (!ft_strncmp(".data", name, 5)
-    ||  !ft_strcmp(".tdata", name)
-    ||  !ft_strcmp(".dynamic", name)
-    ||  ft_ends_with(name, "array")
-    ||  ft_begins_with(name, ".got")
-    ||  ft_begins_with(name, ".plt"))
-        return (1);
-    return (0);
-}
-
-
-static int  type_b(t_node *node, t_elf32 *elf)
-{
-    char    *name;
-
-    name = section_name32(node, elf);
-    if (!ft_strcmp(".bss", name)
-    ||  !ft_strcmp(".tbss", name))
-        return (1);
-    return (0);
-}
-
-
-static int  type_t(t_node *node, t_elf32 *elf)
-{
-    char    *name;
-
-    name = section_name32(node, elf);
-    if (!ft_strcmp(".text", name)
-    ||  !ft_strcmp(".fini", name)
-    ||  !ft_strcmp(".init", name))
-        return (1);
-    return (0);
-}
-
-
-static int  type_r(t_node *node, t_elf32 *elf)
-{
-    char    *name;
-
-    name = section_name32(node, elf);
-    if (!ft_strncmp(".eh", name, 3)
-    ||  ft_begins_with(name, ".ro"))
-        return (1);
-    return (0);
-}
-
-
-static int  type_N(t_node *node, t_elf32 *elf)
-{
-    char    *name;
-
-    name = section_name32(node, elf);
-    if (ft_begins_with(name, ".note"))
-        return (1);
-    return (0);
 }
 
 
@@ -106,8 +45,9 @@ char    resolve_symbol_type32(t_node *node, t_elf32 *elf)
     Elf32_Shdr  *sec;
     
     sym = (Elf32_Sym *)node->object;
-    sec = resolve_section(node, elf);
-
+    sec = resolve_section32(node, elf);
+    if (sec == NULL)
+        return (switch_global(sym->st_info, 'a'));
     if (ELF32_ST_BIND(sym->st_info) == STB_WEAK)
     {
         if (sec->sh_type == SHN_UNDEF)
@@ -116,19 +56,19 @@ char    resolve_symbol_type32(t_node *node, t_elf32 *elf)
     }
     if (ELF32_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
         return ('u');
-    if (sec->sh_type == SHN_ABS)
-        return (switch_global(sym->st_info, 'a'));
     if (sec->sh_type == SHN_UNDEF)
         return ('U');      
-    if (type_d(node, elf))
-        return (switch_global(sym->st_info, 'd'));
-    if (type_b(node, elf))
+    if (sec->sh_type == SHT_NOBITS)
         return (switch_global(sym->st_info, 'b'));
-    if (type_t(node, elf))
+    if (sec->sh_flags & SHF_EXECINSTR)
         return (switch_global(sym->st_info, 't'));
-    if (type_r(node, elf))
+    if (sec->sh_flags & SHF_WRITE)
+        return (switch_global(sym->st_info, 'd'));
+    if (sec->sh_type == SHT_PROGBITS && (sec->sh_flags & SHF_ALLOC))
         return (switch_global(sym->st_info, 'r'));
-    if (type_N(node, elf))
+    if (sec->sh_type == SHT_PROGBITS)
+        return (switch_global(sym->st_info, 'n'));
+    if (sec->sh_type == SHT_NOTE)
         return ('N');
     return (' ');
 }
