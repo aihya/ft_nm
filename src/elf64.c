@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 16:46:42 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/29 16:45:46 by aihya            ###   ########.fr       */
+/*   Updated: 2022/07/03 12:53:06 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,12 @@ static Elf64_Shdr  *get_shdr(void *ptr, char *name, t_elf64 *elf)
 }
 
 
-static int init_elf64(void *ptr, t_elf64 *elf)
+static int init_elf64(void *ptr, t_elf64 *elf, struct stat *st)
 {
     elf->ehdr = (Elf64_Ehdr *)ptr;
     elf->shtab = (Elf64_Shdr *)(ptr + elf->ehdr->e_shoff);
+    if ((void *)elf->shtab > ptr + st->st_size)
+        return (CORRUPTED);
     elf->symtsh = get_shdr(ptr, ".symtab", elf);
     if (elf->symtsh == NULL)
         return (STRIPPED);
@@ -76,19 +78,21 @@ static void    read_symbols(void *ptr, t_node **hashtable, t_elf64 *elf)
 }
 
 
-void            elf64(void *ptr, char *name)
+int            elf64(void *ptr, char *name, struct stat *st)
 {
     t_node  **hashtable;
     t_node  *symbols;
     t_node  *curr;
     t_elf64 elf;
+    int     init_elf64_state;
 
     hashtable = init_hashtable();
-    if (init_elf64(ptr, &elf) == STRIPPED)
-    {
-        error(name, "no symbols");
-        return ;
-    }
+    init_elf64_state = init_elf64(ptr, &elf, st);
+    if (init_elf64_state == STRIPPED)
+        return (error(name, "no symbols"));
+    else if (init_elf64_state == CORRUPTED)
+        return (error(name, "file too short"));
+
     read_symbols(ptr, hashtable, &elf);
     symbols = convert_to_list(hashtable);
     curr = symbols;
@@ -103,11 +107,6 @@ void            elf64(void *ptr, char *name)
             ft_putchar(resolve_symbol_type64(curr, &elf));
             ft_putchar(' ');
             ft_putendl(curr->name);
-            // ft_putstr(curr->name);
-            // ft_putchar(' ');
-            // ft_putchar('[');
-            // ft_putstr(section_name64(curr, &elf));
-            // ft_putendl("]");
         }
         curr = curr->next;
     }

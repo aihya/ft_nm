@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 13:30:16 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/16 10:11:47 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/30 13:38:36 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,25 @@ void    add_node(t_node *node, t_node **hashtable)
 
     curr = hashtable[(int)(node->name[0])];
     if (curr == NULL)
-    {
         hashtable[(int)(node->name[0])] = node;
-        return ;
-    }
     else if (ft_strcmp(node->name, curr->name) < 0)
     {
         node->next = curr;
         hashtable[(int)(node->name[0])] = node;
-        return ;
     }
-    prev = NULL;
-    while (curr)
+    else
     {
-        if (ft_strcmp(node->name, curr->name) < 0)
-            break;
-        prev = curr;
-        curr = curr->next;
+        prev = NULL;
+        while (curr)
+        {
+            if (ft_strcmp(node->name, curr->name) < 0)
+                break;
+            prev = curr;
+            curr = curr->next;
+        }
+        node->next = prev->next;
+        prev->next = node;
     }
-    node->next = prev->next;
-    prev->next = node;
 }
 
 

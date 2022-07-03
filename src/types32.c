@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/29 16:08:38 by aihya            ###   ########.fr       */
+/*   Updated: 2022/07/03 12:45:29 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ char    resolve_symbol_type32(t_node *node, t_elf32 *elf)
     if (ELF32_ST_BIND(sym->st_info) == STB_GNU_UNIQUE)
         return ('u');
     if (sec->sh_type == SHN_UNDEF)
-        return ('U');      
+        return ('U');
+    if (ELF32_ST_TYPE(sym->st_info) == STT_COMMON)
+        return (switch_global(sym->st_info, 'c'));  
     if (sec->sh_type == SHT_NOBITS)
         return (switch_global(sym->st_info, 'b'));
     if (sec->sh_flags & SHF_EXECINSTR)

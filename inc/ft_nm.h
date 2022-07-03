@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 16:29:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/25 19:11:07 by aihya            ###   ########.fr       */
+/*   Updated: 2022/07/03 12:43:34 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # define ERROR -1
 # define OK 1
 # define STRIPPED 2
+# define CORRUPTED 3
 
 typedef struct s_node
 {
@@ -48,8 +49,8 @@ t_node		*find_head(t_node **hashtable);
 void		add_node(t_node *node, t_node **hashtable);
 
 
-void		elf32(void *ptr, char *name);
-void		elf64(void *ptr, char *name);
+int         elf32(void *ptr, char *name, struct stat *st);
+int         elf64(void *ptr, char *name, struct stat *st);
 
 
 // Utility functions

@@ -6,12 +6,11 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 17:22:55 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/27 19:06:15 by aihya            ###   ########.fr       */
+/*   Updated: 2022/07/03 12:51:46 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
-
 
 int     error(char *name, char *msg)
 {
@@ -28,7 +27,7 @@ int     error(char *name, char *msg)
 }
 
 
-static void	ft_nm(void *ptr, char *name)
+static int	ft_nm(void *ptr, char *name, struct stat *st)
 {
 	Elf64_Ehdr	*header;
 
@@ -37,19 +36,14 @@ static void	ft_nm(void *ptr, char *name)
 	||	header->e_ident[EI_MAG1] != ELFMAG1
 	||	header->e_ident[EI_MAG2] != ELFMAG2
 	||	header->e_ident[EI_MAG3] != ELFMAG3)
-	{
-		error(name, "file format not recognized");
-		return ;
-	}
+		return (error(name, "file format not recognized"));
 	if (header->e_type != ET_REL && header->e_type != ET_DYN)
-	{
-		error(NULL, "supports only object files and shared objects");
-		return ;
-	}
+		return (error(NULL, "supports only object files and shared objects"));
 	if (header->e_ident[EI_CLASS] == ELFCLASS32)
-		elf32(ptr, name);
+		return (elf32(ptr, name, st));
 	if (header->e_ident[EI_CLASS] == ELFCLASS64)
-		elf64(ptr, name);
+		return (elf64(ptr, name, st));
+	return (error(name, "supports only 64-bits or 32-bits elf files"));
 }
 
 
@@ -80,26 +74,20 @@ int	ft_nm_file(char *name)
 
 	fd = open_file(name, &st);
 	if (fd == ERROR)
-		return (EXIT_FAILURE);
-	
+		return (ERROR);
+
 	ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (ptr == MAP_FAILED)
-	{
-		error("mmap", "Failed to map file to memory");
-		return (EXIT_FAILURE);
-	}
-	ft_nm(ptr, name);
+		return (error("mmap", "Failed to map file to memory"));
+
+	ft_nm(ptr, name, &st);
 	if (munmap(ptr, st.st_size) < 0)
-	{
-		error("munmap", "Failed to unmap file from memory");
-		return (EXIT_FAILURE);
-	}
+		return (error("munmap", "Failed to unmap file from memory"));
+
 	if (close(fd) == -1)
-	{
-		error("close", "Failed to close file descriptor");
-		return (EXIT_FAILURE);
-	}
-	return (1);
+		return (error("close", "Failed to close file descriptor"));
+		
+	return (0);
 }
 
 
@@ -112,8 +100,11 @@ int	ft_nm_files(int argc, char **argv)
 	i = 0;
 	while (++i < argc)
 	{
+		ft_putchar('\n');
+		ft_putstr(argv[i]);
+		ft_putendl(":");
 		if (ft_nm_file(argv[i]) == ERROR)
-			ret |= EXIT_FAILURE;
+			ret |= ERROR;
 	}
 	return (ret);
 }

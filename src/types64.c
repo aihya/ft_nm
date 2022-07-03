@@ -6,7 +6,7 @@
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:19:13 by aihya             #+#    #+#             */
-/*   Updated: 2022/06/29 17:33:43 by aihya            ###   ########.fr       */
+/*   Updated: 2022/06/30 10:32:31 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,7 @@ char    resolve_symbol_type64(t_node *node, t_elf64 *elf)
     if (sec->sh_type == SHN_UNDEF)
         return ('U');
     if (ELF64_ST_TYPE(sym->st_info) == STT_COMMON)
-        return (switch_global(sym->st_info, 'c'));
-    // if (sec->sh_type == SDATA_SECTION_ASM_OP)
-    //     return (switch_global(sym->st_info, 's'));
+        return (switch_global(sym->st_info, 'c'));  
     if (sec->sh_type == SHT_NOBITS)
         return (switch_global(sym->st_info, 'b'));
     if (sec->sh_flags & SHF_EXECINSTR)
