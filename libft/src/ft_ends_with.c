@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   flags.c                                            :+:      :+:    :+:   */
+/*   ft_ends_with.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 16:55:40 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/26 11:40:16 by aihya            ###   ########.fr       */
+/*   Created: 2022/06/25 10:43:57 by aihya             #+#    #+#             */
+/*   Updated: 2022/06/25 10:45:43 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "libft.h"
 
-unsigned int	flag_b(uint64_t flag)
+int	ft_ends_with(const char *haystack, const char *needle)
 {
-	return (flag == (SHF_ALLOC | SHF_WRITE));
-}
+	size_t	h_len;
+	size_t	n_len;
 
-unsigned int	flag_d(uint64_t flag)
-{
-	return ((flag & (SHF_ALLOC | SHF_WRITE)) == (SHF_ALLOC | SHF_WRITE));
-}
-
-unsigned int	flag_r(uint64_t flag)
-{
-	return ((flag & (SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE)) == SHF_ALLOC);
-}
-
-unsigned int	flag_t(uint64_t flag)
-{
-	return (flag == (SHF_ALLOC | SHF_EXECINSTR));
+	h_len = ft_strlen(haystack);
+	n_len = ft_strlen(needle);
+	if (n_len <= h_len)
+		return (!ft_strcmp(haystack + (h_len - n_len), needle));
+	return (0);
 }

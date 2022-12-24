@@ -5,92 +5,111 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 18:00:52 by aihya             #+#    #+#             */
-/*   Updated: 2022/04/21 20:56:30 by aihya            ###   ########.fr       */
+/*   Created: 2022/06/29 16:00:00 by aihya             #+#    #+#             */
+/*   Updated: 2022/07/03 17:07:42 by aihya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "elf32.h"
 
-t_elf32     *elf32_init(void *ptr)
+static void    print_addr(t_node *node, t_elf32 *elf)
 {
-    t_elf32 *elf;
-
-    elf = NULL;
-    if (ptr)
+    if (((Elf32_Sym *)node->object)->st_value)
+        ft_putnbr_base(((Elf32_Sym *)node->object)->st_value, 16, 8);
+    else
     {
-        elf = (t_elf32 *)malloc(sizeof(t_elf32));
-        if (elf)
-        {
-            elf->ehdr = (Elf32_Ehdr *)(ptr);
-            elf->shdr = (Elf32_Shdr *)(ptr + elf->ehdr->e_shoff);
-            elf->shst = ptr + elf->shdr[elf->ehdr->e_shstrndx].sh_offset;
-            elf->symt = elf32_shdr(ptr, ".symtab", elf);
-            if (elf->symt == NULL)
-                return (ERR_NO_SYMS);
-            elf->strt = ptr + elf32_shdr(ptr, ".strtab", elf)->sh_offset;
-            elf->syms = ptr + elf->symt->sh_offset;
-        }
+        if (section_name32(node, elf)[0] || ((Elf32_Sym *)node->object)->st_shndx == SHN_ABS)
+            ft_putnbr_base(0, 16, 8);
+        else
+            ft_putstr("        ");
     }
-    return (elf);
 }
 
-Elf32_Shdr  *elf32_shdr(void *ptr, char *target, t_elf32 *elf)
-{
-    int     idx;
-    char    *name;
 
-    if (ptr && target && elf)
+static Elf32_Shdr  *get_shdr(void *ptr, char *name, t_elf32 *elf)
+{
+    int i;
+    Elf32_Shdr    *shstrtab;
+
+    shstrtab = &elf->shtab[elf->ehdr->e_shstrndx];
+    i = 0;
+    while (i < elf->ehdr->e_shnum)
     {
-        idx = -1;
-        while (++idx < elf->ehdr->e_shnum)
-        {
-            name = elf->shst + elf->shdr[idx].sh_name;
-            if (!strcmp(name, target))
-                return (&elf->shdr[idx]);
-        }
+        if (!ft_strcmp(name, ptr + shstrtab->sh_offset + elf->shtab[i].sh_name))
+            return (&elf->shtab[i]);
+        i++;
     }
     return (NULL);
 }
 
-static t_node   *concatenate(t_node *syms, t_node *secs)
-{
-    t_node  *node;
 
-    if (syms == NULL)
-        return (secs);
-    if (secs == NULL)
-        return (syms);
-    node = syms;
-    while (node && node->next)
-        node = node->next;
-    node->next = secs;
-    secs->prev = node;
-    return (syms);
+static int init_elf32(void *ptr, t_elf32 *elf, struct stat *st)
+{
+    elf->ehdr = (Elf32_Ehdr *)ptr;
+    elf->shtab = (Elf32_Shdr *)(ptr + elf->ehdr->e_shoff);
+    if ((void *)elf->shtab > ptr + st->st_size)
+        return (CORRUPTED);
+    elf->symtsh = get_shdr(ptr, ".symtab", elf);
+    if (elf->symtsh == NULL)
+        return (STRIPPED);
+    elf->strtsh = get_shdr(ptr, ".strtab", elf);
+    elf->symtab = (Elf32_Sym *)(ptr + elf->symtsh->sh_offset);
+    elf->strtab = (char *)(ptr + elf->strtsh->sh_offset);
+    elf->ptr = ptr;
+    elf->shstrtab = &elf->shtab[elf->ehdr->e_shstrndx];
+    return (OK);
 }
 
-void        elf32(void *ptr, int ops)
-{
-    t_elf32 *elf;
-    t_node  *syms;
-    t_node  *secs;
-    t_node  *tail;
-    size_t  size;
 
-    size = 0;
-    elf = elf32_init(ptr);
-    if (elf)
+static void    read_symbols(t_node **hashtable, t_elf32 *elf)
+{
+    int i;
+    t_node  *node;
+
+    i = 0;
+    while (i < (int)(elf->symtsh->sh_size / sizeof(Elf32_Sym)))
     {
-        syms = elf32_syms(elf, &size);
-        secs = elf32_secs(elf, &size);
-        syms = concatenate(syms, secs);
-        tail = NULL;
-        if (ops & OP_R)
-        {
-            tail = syms;
-            while (tail && tail->next)
-                tail = tail->next;
-        }
-        print32(elf, syms, tail, ops);
+        node = malloc(sizeof(t_node));
+        node->object = &(elf->symtab[i]);
+        node->name = elf->strtab + elf->symtab[i].st_name;
+        add_node(node, hashtable);
+        i++;
     }
+}
+
+
+int            elf32(void *ptr, char *name, struct stat *st)
+{
+    t_node  **hashtable;
+    t_node  *symbols;
+    t_node  *curr;
+    t_elf32 elf;
+    int     init_elf32_state;
+
+    hashtable = init_hashtable();
+    init_elf32_state = init_elf32(ptr, &elf, st);
+    if (init_elf32_state == STRIPPED)
+        return (error(name, "no symbols"));
+    else if (init_elf32_state == CORRUPTED)
+        return (error(name, "file too short"));
+
+    read_symbols(hashtable, &elf);
+    symbols = convert_to_list(hashtable);
+    curr = symbols;
+    while (curr)
+    {
+        if ((ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_FILE
+        &&  ELF32_ST_TYPE(((Elf32_Sym *)curr->object)->st_info) != STT_SECTION)
+        &&  curr->name[0])
+        {
+            print_addr(curr, &elf);
+            ft_putchar(' ');
+            ft_putchar(resolve_symbol_type32(curr, &elf));
+            ft_putchar(' ');
+            ft_putendl(curr->name);
+        }
+        curr = curr->next;
+    }
+    free_hashtable(hashtable, symbols);
+    return (0);
 }

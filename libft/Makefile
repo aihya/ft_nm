@@ -6,7 +6,7 @@
 #    By: aihya <aihya@student.1337.ma>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/28 16:28:57 by aihya             #+#    #+#              #
-#    Updated: 2022/04/22 14:44:53 by aihya            ###   ########.fr        #
+#    Updated: 2022/07/03 17:35:59 by aihya            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ NAME = libft.a
 SRC_NAME =	ft_abs.c \
 			ft_atoi.c \
 			ft_begins_with.c \
+			ft_ends_with.c \
 			ft_bzero.c \
 			ft_chain_cpy.c \
 			ft_chain_free.c \
@@ -114,10 +115,10 @@ $(NAME) : $(OBJ)
 	ar rc $@ $^
 	ranlib $@
 
-clean:
+clean :
 	/bin/rm -rf $(OBJ_PATH) 2> /dev/null
 
-fclean: clean
+fclean : clean
 	/bin/rm -f $(NAME)
 
 re: fclean all
